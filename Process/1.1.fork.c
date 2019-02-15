@@ -6,6 +6,11 @@
 
 //进程的三个基本状态：就绪、阻塞、执行
 
+//fork函数创建子进程，无参数
+//返回值为-1：创建进程失败
+//返回值为 0：子进程
+//返回值为大于0：父进程 子进程共享父进程的资源（代码） 一次调用两次返回：创建子进程给子进程返回0（成功）或-1（失败），给父进程返回子进程的ID号. 因为任何进程的 ID 均不为 0,程序可以藉此很轻松的判断自身运行在哪个进程中。
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<sys/types.h>
@@ -16,12 +21,12 @@ int main()
     pid_t pid;
    
     printf("Process Creation Study\n");
-    pid=fork();
+    pid = fork();
     switch(pid)
     {
        case 0:
          printf("Child process is running,ChildPid is %d,ParentPid is %d\n",
-                            pid,getppid());
+                            getpid(),getppid());
          break;
        case -1:
          printf("Process creation failed\n");
