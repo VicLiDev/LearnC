@@ -10,10 +10,18 @@
 
 // #include <pthread.h>
 // int pthread_join(pthread_t thread, void ** retval);
-// 描述：调用该函数的线程将挂起等待，直到id为thread的线程终止。thread线程以不同的方法终止，通过pthread_join() 得到的终止状态是不同的，主要有如下几种：
-//        thread线程通过return 返回， retval 所指向的单元里存放的是 thread线程函数的返回值。
-//        thread线程是被的线程调用pthread_cancel() 异常终止掉，retval 所指向的单元存放的是常数PTHREAD_CANCELED.
-//        如果thread线程调用pthread_exit() 终止的，retval 所指向的单元存放的是传给pthread_exit的参数。
+// 描述：调用该函数的线程将挂起等待，直到id为thread的线程终止。如果线程已经终止，该函数会立即返回。一旦线程终止，调用线程就会醒来。
+//      Pthread中所有线程都是对等节点，任何一个线程都可以join对方。一个线程可以join多个线程（这往往用在主线程等待其他线程）但是
+//      应该只有一个线程尝试join某个特殊线程，多个线程不应该尝试随便join其他线程。thread线程以不同的方法终止，通过pthread_join()
+//      得到的终止状态是不同的，主要有如下几种：
+//         thread线程通过return 返回， retval 所指向的单元里存放的是 thread线程函数的返回值。
+//         thread线程是被的线程调用pthread_cancel() 异常终止掉，retval 所指向的单元存放的是常数PTHREAD_CANCELED.
+//         如果thread线程调用pthread_exit() 终止的，retval 所指向的单元存放的是传给pthread_exit的参数。
+//      函数调用出错时会返回非零错误码。
+//
+//
+// 默认情况下线程是可以join的。但是，线程也可以detach（分离），使得线程不可join。可以join的线程在被join之前占有的系统资源不会被释放。
+// 而detach的进程会在进程结束的时候自动释放资源。
 
 #include <stdio.h>
 #include <pthread.h>

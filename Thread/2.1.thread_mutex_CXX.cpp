@@ -1,5 +1,6 @@
 //程序来源: https://blog.csdn.net/u011726005/article/details/78253850 
 //说明:使用g++编译的时候注意加上 -lpthread 参数
+//    另外，这个文件里写的互斥锁是C++库里使用的互斥锁，而不是linux下的互斥锁，linux中的互斥锁使用 pthread_mutex_t 来定义
 
 #include <iostream>
 #include <string>
