@@ -1,14 +1,27 @@
 // 互斥锁
 //
-// 初始化互斥
-// 互斥使用pthread_mutex_t对象表示。正如Pthread API中的绝大多数对象，他表示提供给各种互斥接口的模糊结构。虽然你可以动态创建互斥，绝大多数使用方式是静态的：
-// pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+// 初始化互斥锁
+// 互斥锁可以动态或静态的被创建，可以用宏PTHREAD_MUTEX_INITIALIZER来静态的初始化锁，采用这种方式比较容易理解，互斥锁是pthread_mutex_t的结构体，而这个宏是一个结构常量，如下可以完成静态的初始化锁：
+// pthread_mutex_t mutex =PTHREAD_MUTEX_INITIALIZER;
+//
+// 动态创建是通过pthread_mutex_init函数实现，函数原型如下：
+// int pthread_mutex_init(pthread_mutex_t*mutex, const pthread_mutexattr_t * attr);
+// 其中：
+// mutex：所需创建的锁；
+// attr：创建锁的属性。一般默认为NULL，分为以下几个属性：
+//  * PTHREAD_MUTEX_TIMED_NP
+//      这是缺省值，也就是普通锁。当一个线程加锁以后，其余请求锁的线程将形成一个等待队列，并在解锁后按优先级获得锁。这种锁策略保证了资源分配的公平性；
+//  * PTHREAD_MUTEX_RECURSIVE_NP
+//      嵌套锁，允许同一个线程对同一个锁成功获得多次，并通过多次unlock解锁。如果是不同线程请求，则在加锁线程解锁时重新竞争；
+//  * PTHREAD_MUTEX_ERRORCHECK_NP
+//      检错锁，如果同一个线程请求同一个锁，则返回EDEADLK，否则与PTHREAD_MUTEX_TIMED_NP类型动作相同。这样就保证当不允许多次加锁时不会出现最简单情况下的死锁；
+//  * PTHREAD_MUTEX_ADAPTIVE_NP
 //
 //
 // 加锁
 // 加锁即获取锁，通过pthread_mutex_lock()实现：
 // int pthread_mutex_lock(pthread_mutex_t *mutex);
-// 成功调用 pthread_mutex_lock() 会阻塞调用的线程，直到由mutex指向的互斥锁变得可用。一旦互斥锁可用了，调用i线程就会被唤醒，函数返回0。如果在调用时互斥锁可用，
+// 成功调用 pthread_mutex_lock() 会阻塞调用的线程，直到由mutex指向的互斥锁变得可用。一旦互斥锁可用了，调用线程就会被唤醒，函数返回0。如果在调用时互斥锁可用，
 // 函数会立即返回。
 // 出错时，函数可能返回的非0错误码。
 // 尝试获取已经持有的互斥锁会导致死锁。另外调用方往往不会检查返回值。直接执行： pthread_mutex_lock(&mutex);
@@ -20,6 +33,11 @@
 // 成功调用pthread_mutex_unlock()会释放由mutex所指向的互斥锁，并返回0.该调用不会阻塞，互斥锁可以立即释放。
 // 出错时返回非零的错误码。
 // 调用方往往不会检查返回值。直接执行： pthread_mutex_unlock(&mutex);
+//
+//
+// 尝试加锁
+// int pthread_mutex_trylock(pthread_mutex_t *mutex);
+// pthread_mutex_trylock()语义与pthread_mutex_lock()类似，不同的是在锁已经被占据时返回EBUSY而不是挂起等待。
 
 
 #include <stdio.h>

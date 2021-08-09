@@ -35,8 +35,8 @@
 //     pthread_mutex_lock(&mutex); // 拿到互斥锁，进入临界区
 //     while( 条件为假)
 //         pthread_cond_wait(cond, mutex); // 令进程等待在条件变量上
-//      修改条件
-//      pthread_mutex_unlock(&mutex); // 释放互斥锁
+//     修改条件
+//     pthread_mutex_unlock(&mutex); // 释放互斥锁
 //
 //
 // 生产者通知消费者的伪代码：
@@ -59,7 +59,7 @@ int share_variable = 0 ;// this is the share variable, shared by consumer and pr
  
 void* consumer( void* arg )
 {
-   int num = (int)arg ;
+   int num = *(int*)arg;
    while ( 1 ) {
       /******* critical section begin *******/
       pthread_mutex_lock( &g_mutex ) ;
@@ -87,7 +87,7 @@ void* consumer( void* arg )
  
 void* producer( void* arg )
 {
-   int num = (int)arg ;
+   int num = *(int*)arg;
    while(1){
       /******* critical section begin *******/
       pthread_mutex_lock( &g_mutex ) ;
@@ -111,24 +111,25 @@ void* producer( void* arg )
  
 int main( void )
 {
-   // initiate mutex
-   pthread_mutex_init( &g_mutex, NULL ) ;
-   // initiate condition
-   pthread_cond_init( &g_cond, NULL ) ;
- 
-   // initiate consumer threads
-   for ( int i = 0; i < CONSUMERS_COUNT; ++ i ){
-      pthread_create( &g_thread[i], NULL, consumer, (void*)i ) ;
-   }
-   sleep( 1 ) ;
-   // initiate producer threads
-   for ( int i = CONSUMERS_COUNT; i < CONSUMERS_COUNT + PRODUCERS_COUNT; ++ i ){
-      pthread_create( &g_thread[i], NULL, producer, (void*)i ) ;
-   }
-   for ( int i = 0; i < CONSUMERS_COUNT + PRODUCERS_COUNT; ++ i ){
-      pthread_join( g_thread[i], NULL ) ;
-   }
- 
-   pthread_mutex_destroy( &g_mutex ) ;
-   pthread_cond_destroy( &g_cond ) ;
+    int loop;
+    // initiate mutex
+    pthread_mutex_init( &g_mutex, NULL ) ;
+    // initiate condition
+    pthread_cond_init( &g_cond, NULL ) ;
+
+    // initiate consumer threads
+    for ( loop = 0; loop < CONSUMERS_COUNT; ++ loop ){
+        pthread_create( &g_thread[loop], NULL, consumer, (void*)&loop ) ;
+    }
+    sleep( 1 ) ;
+    // initiate producer threads
+    for ( loop = CONSUMERS_COUNT; loop < CONSUMERS_COUNT + PRODUCERS_COUNT; ++ loop ){
+        pthread_create( &g_thread[loop], NULL, producer, (void*)&loop ) ;
+    }
+    for ( loop = 0; loop < CONSUMERS_COUNT + PRODUCERS_COUNT; ++ loop ){
+        pthread_join( g_thread[loop], NULL ) ;
+    }
+
+    pthread_mutex_destroy( &g_mutex ) ;
+    pthread_cond_destroy( &g_cond ) ;
 }
