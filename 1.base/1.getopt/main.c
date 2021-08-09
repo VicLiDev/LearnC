@@ -7,6 +7,8 @@
  * 如果选项成功找到，返回选项字母；如果所有命令行选项都解析完毕，返回 -1；如果遇到选项字符不在 optstring 中，
  * 返回字符 '?'；如果遇到丢失参数，那么返回值依赖于 optstring 中第一个字符，如果第一个字符是 ':' 则返回':'，
  * 否则返回'?'并提示出错误信息。
+ * 注意：在C语言中，单引号括起来的字符实际上代表一个整数，因此可以直接用 getopt 返回的 int 类型数据和单引号括起来的字母比较，
+ *       例如代码示例中直接使用的 switch 语句
  *
  * 举例说明optstring的格式意义：
  * char *optstring = “ab:c::”;
@@ -31,10 +33,20 @@ int main(int argc, char **argv)
     int opt;
     char *string = "a::b:c:d";
     while ((opt = getopt(argc, argv, string))!= -1)
-    {  
+    { 
         printf("opt = %c\t\t", opt);
         printf("optarg = %s\t\t",optarg);
         printf("optind = %d\t\t",optind);
         printf("argv[optind] = %s\n",argv[optind]);
+        switch(opt){
+        case 'a':
+            print("----------- a\n");
+            break;
+        case 'b':
+            print("----------- b\n");
+            break;
+        default:
+            break;
+        }
     }  
 }

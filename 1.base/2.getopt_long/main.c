@@ -8,12 +8,13 @@
  * struct option {
  * const char  *name;       // 参数名称,也是长选项的名称
  * int          has_arg;    // 指明是否带有参数,如果为 1 则表示该选项接受一个参数,否则为 0
- * int          *flag;      // flag=NULL时,返回value;不为空时,*flag=val,返回0
+ * int          *flag;      // flag=NULL时,函数返回val, 如下代码示例中： 可执行程序 --help, getopt_long 的返回值为 h;
+ *                          // flag不为空时,可以设置一个变量，例如： {"http-proxy", required_argument, &lopt, 1 }, getopt_long返回0, lopt的值为1
  * int          val;        // 用于指定函数找到选项的返回值或flag非空时指定*flag的值
  * }; 
  *
  * has_arg  指明是否带参数值，其数值可选：
- * no_argument         表明长选项不带参数，如：--name, --help
+ * no_argument        表明长选项不带参数，如：--name, --help
  * required_argument  表明长选项必须带参数，如：--prefix /root或 --prefix=/root
  * optional_argument  表明长选项的参数是可选的，如：--help或 –prefix=/root，其它都是错误
  */
