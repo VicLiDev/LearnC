@@ -1,10 +1,3 @@
-/*************************************************************************
-    > File Name: time.c
-    > Author: LiHongjin
-    > Mail: 872648180@qq.com 
-    > Created Time: Wed 18 Aug 2021 08:50:41 PM CST
- ************************************************************************/
-
 // int gettimeofday(struct timeval *tv,struct timezone *tz);
 // strut timeval {
 //     long tv_sec; /* 秒数 */
@@ -12,7 +5,7 @@
 // };
 
 
-//gettimeofday将时间保存在结构tv之中.tz一般我们使用NULL来代替.
+// gettimeofday将时间保存在结构tv之中.tz一般我们使用NULL来代替.
 
 
 // compile: gcc time.c -lm

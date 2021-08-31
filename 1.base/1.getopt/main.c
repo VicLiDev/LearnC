@@ -40,10 +40,10 @@ int main(int argc, char **argv)
         printf("argv[optind] = %s\n",argv[optind]);
         switch(opt){
         case 'a':
-            print("----------- a\n");
+            printf("----------- a\n");
             break;
         case 'b':
-            print("----------- b\n");
+            printf("----------- b\n");
             break;
         default:
             break;
