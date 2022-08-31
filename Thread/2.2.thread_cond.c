@@ -45,10 +45,11 @@
 //     pthread_cond_signal(cond); // 通知等待在条件变量上的消费者
 //     pthread_mutex_unlock(&mutex); // 释放互斥锁
 
+#include <stdio.h>
 #include <unistd.h>
 #include <pthread.h>
  
-#define CONSUMERS_COUNT 2	
+#define CONSUMERS_COUNT 9	
 #define PRODUCERS_COUNT 1
  
 pthread_mutex_t g_mutex ;
@@ -79,7 +80,6 @@ void* consumer( void* arg )
  
       pthread_mutex_unlock( &g_mutex ) ;
       /******** critial section end *********/
-      sleep( 1 ) ;
    }
    
    return NULL ;
@@ -102,10 +102,10 @@ void* producer( void* arg )
       pthread_mutex_unlock( &g_mutex ) ;
  
       /******** critial section end *********/
-      sleep( 5 ) ;
+      sleep(1) ;
    }
    
-   return 1 ;
+   return NULL;
 }
  
  
@@ -121,7 +121,7 @@ int main( void )
     for ( loop = 0; loop < CONSUMERS_COUNT; ++ loop ){
         pthread_create( &g_thread[loop], NULL, consumer, (void*)&loop ) ;
     }
-    sleep( 1 ) ;
+    sleep(1) ;
     // initiate producer threads
     for ( loop = CONSUMERS_COUNT; loop < CONSUMERS_COUNT + PRODUCERS_COUNT; ++ loop ){
         pthread_create( &g_thread[loop], NULL, producer, (void*)&loop ) ;

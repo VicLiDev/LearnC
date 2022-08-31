@@ -85,25 +85,39 @@
 
 sem_t sem;
 
-void *testfunc(void *arg)
+void *testfunc2(void *arg)
 {
     while(1)
     {
         sem_wait(&sem);
         //do something....
-        printf("hello world...\n");
+        printf("======> wait thd 2\n");
+    }
+}
+
+void *testfunc1(void *arg)
+{
+    while(1)
+    {
+        sem_wait(&sem);
+        //do something....
+        printf("======> wait thd 1\n");
     }
 }
 
 int main()
 {
-    pthread_t ps;
+    pthread_t pt1, pt2;
     sem_init(&sem, 0, 0);
-    pthread_create(&ps,NULL,testfunc,NULL);
+    pthread_create(&pt1,NULL,testfunc1,NULL);
+    pthread_create(&pt2,NULL,testfunc2,NULL);
     while(1)
     {
-        //每隔一秒sem_post 信号量sem加1 子线程sem_wait解除等待 打印hello world
+        // 每隔一秒执行一次 sem_post 信号量sem加1 子线程sem_wait解除等待
+        // 执行一次sem_post sem 只能加1，也就意味着只能被减一次
+        // 如果这里执行多次 sem_post ，那等待线程也就可以多次执行，即多次减一
         sem_post(&sem);
+        printf("======> post\n");
         sleep(1);
     }
 
