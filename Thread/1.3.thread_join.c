@@ -1,11 +1,9 @@
-// 说说我理解的为什么需要线程等待，有时候需要让一个线程去执行一段代码，我们需要知道它是否帮我们完成了指定的要求，或者异常终止，
-// 这时候我们就需要获取线程运行结果，线程退出可以通过返回值带出或者通过pthread_exit()参数带出，拿到它的“遗言”。
-//
+// 有时候需要让一个线程去执行一段代码，我们需要知道它是否帮我们完成了指定的要求，或者异常终止，
+// 这时候我们就需要获取线程运行结果，线程退出可以通过返回值带出或者通过pthread_exit()参数带出，
+// 拿到它的“遗言”。
 // 
-// 我们可以注意到在上面的例子中，线程退出返回值和pthread_exit()的参数都是NULL，说明我们根本不关心线程的”死活“。
-// 
-// 还有一个用处，在上面的例子中，我们都是在主线程中sleep()函数来防止新创建的线程还未结束，整个进程就结束，而现在我们可以用线程
-// 等待函数来达到这个目的。
+// 还有一个用处，在上面的例子中，我们都是在主线程中sleep()函数来防止新创建的线程还未结束，
+// 整个进程就结束，而现在我们可以用线程等待函数来达到这个目的。
 
 // #include <pthread.h>
 // int pthread_join(pthread_t thread, void ** retval);
@@ -28,13 +26,21 @@
 
 void* run_1(void *arg)
 {
-    printf(" I am thread 1 \n");
+    int loop = 0;
+    for (loop = 0; loop < 3; loop++) {
+        printf("I am thread 1 loop:%d\n", loop);
+        sleep(1);
+    }
     return (void*)1; 
 }
 
 void* run_2(void *arg)
 {
-    printf(" I am thread 2 \n");
+    int loop = 0;
+    for (loop = 0; loop < 3; loop++) {
+        printf("I am thread 2 loop:%d\n", loop);
+        sleep(1);
+    }
 
     pthread_exit((void*)2);
 }
@@ -51,8 +57,8 @@ int main()
     pthread_join(tid1, &retval_1);
     pthread_join(tid2, &retval_2);
 
-    printf(" thread 1 retval is  %u \n", (int*)retval_1);
-    printf(" thread 2 retval is  %u \n", (int*)retval_2);
+    printf("thread 1 retval is  %p \n", (int*)retval_1);
+    printf("thread 2 retval is  %p \n", (int*)retval_2);
 
     return 0;
 }
