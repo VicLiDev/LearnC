@@ -581,12 +581,14 @@ $ (gdb) attach <pid >
 3)进入gdb后，运行时设置：r <paras>
 4)--batch 在处理完所有用“-x”指定的命令文件后以状态 0 退出。 如果在命令文件中执行 GDB 命令时发生错误，则以非零状态退出。例如：
 gdb -ex=r --batch --args <paras>   其中 r 是 run的简写
-5)	使用command文件
+5)使用command文件
 进入gdb之前：
 gdb --command=<commandfile.gdb> [--batch] --args <app> [<paras>]
 进入gdb之后：
 source <commandfile.gdb>
 commandfile的编写按照命令行敲命令的顺序即可
+6) show user
+  查看当前用户使用的命令等相关信息
 注意：无论在哪里设置参数，只要设置完就可以直接使用r运行，默认带有参数，除非另作修改更新，才会使用新的参数
 ```
 
@@ -623,7 +625,7 @@ $(gdb)  starti # 开始执行程序，在第一条(机器)指令处会停下来
 $(gdb)  continue [<ignore-cnt>]# 可简写为 c，恢复程序运行直到程序结束或到达下一个断点，ignore-cnt 表示忽略其后多少次断点
 $(gdb)  next # 下一步，可简写为 n
 $(gdb)  break # 中断，可简写为 b
-$(gdb) where # 查看程序当前位置
+$(gdb)  where # 查看程序当前位置
 $(gdb)  print # 打印，可简写为 p
 $(gdb)  jump <linespec>  # GDB 提供了乱序执行的功能，<inespee>可以是文件的行号，可以是file:line格式，也可以是fnum 这种偏移量格式，表示下一条运行语句从哪里开始。
 $(gdb)  signal <signal> # 使用singal 命令，可以产生一个信号量给被调试的程序，如中断信号 ctrl+C。于是，可以在程序运行的任意位置处设置断点，并在该断点处用 GDB 产生一个信号量，这种精确地在某处产生信号的方法非常有利于程序的调试。UINIX 的系统信号量通常为 1-15，因此 signals 的取值也在这个范围内。
@@ -791,9 +793,54 @@ info terminal 用于显示程序用到的终端模式
     （2）info args：查看当前帧中的参数
     （3）info locals：查看当前帧中的局部变量
     （4）info catch：查看当前帧中的异常处理器
-    4）帧分析举例
+    4）跟栈帧相关的寄存器
+    ```shell
+        %rax 作为函数返回值使用
+        %rbp 栈帧指针，指向栈基
+        %rsp 栈帧指针寄存器，指向栈顶
+        x86架构的芯片对同一个寄存器有不同的名字，但是描述的位数不同，以上命名都是描述64bit的位宽，但对于更小的位宽也有相应的名字，例如：
+        64bit --> 32bit --> 16bit --> 8bit  func
+        %rax      %eax      %ax       %al  作为函数返回值使用
+        %rbp      %ebp                     栈帧指针，指向栈基，被调用者保护
+        %rsp      %esp                     栈帧指针寄存器，指向栈顶
+    ```
+    参考：
+    [x86-64 下函数调用及栈帧原理](https://zhuanlan.zhihu.com/p/27339191)
+    [x86-64寄存器和栈帧](https://zhuanlan.zhihu.com/p/440016053)
+    [rax,eax,ax,ah,al 关系](https://blog.csdn.net/MashiMaroJ/article/details/120646168)
+    ![](./Embedded_dev_notes.pic/Picture26.png)
+    ![](./Embedded_dev_notes.pic/Picture25.png)
 
 8. `disassemble <func>` # 命令用于反汇编，可用它来查看当前执行时的源代码的机器码，实际上只是把目前内存中的指令冲刷出来。
+
+9. 自定义函数
+    可以写在 --command 加载的文件里，也可以在gdb的命令行里定义，语法如下：
+    ```shell
+    define <funcName>
+        <op1>
+        <op2>
+        <op3>
+    end
+    ```
+    例如：
+    ```shell
+    define test
+    print "abcd"
+    end
+    ```
+    使用时直接输入函数名就可以了
+
+10. 寄存器操作
+    ```shell
+    查看寄存器的值
+    info registers 打印所有寄存器
+    registers $<regName> 查看指定寄存器值，比print查看寄存器专业些
+    print $<regName> 查看指定寄存器值
+
+    修改寄存器的值
+    set var $<regName>=<regVal>
+    ```
+
 
 #### 嵌入式GDB远程调试
 * 调试主机需要安装gdb-multiarch，这里需要与嵌入式设备匹配，我是用udooer的开发板的时候发现gdb-multiarch可以使用。
