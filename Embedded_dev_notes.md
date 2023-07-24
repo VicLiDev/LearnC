@@ -248,6 +248,7 @@ __SIZEOF_SIZE_T__
 __SIZEOF_WCHAR_T__  
 __SIZEOF_WINT_T__  
 __SIZEOF_PTRDIFF_T__  
+__GNUC__ 、__GNUC_MINOR__ 、__GNUC_PATCHLEVEL__分别代表gcc的主版本号，次版本号，修正版本号
 ```  
 更多宏定义可以参考：[3.7.2 Common Predefined Macros](https://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html)  
   
