@@ -1120,102 +1120,6 @@ rk3566_r:/ # gdbserver :8888 –attach 357
 ```  
   
   
-#### top 使用技巧  
-top -H 按照线程查看，或者启动top之后按 H 也可以  
-top 按照进程查看  
-top -H | grep <> 按照筛选项查看  
-  
-参考博客： [Linux top命令详解：持续监听进程运行状态](http://c.biancheng.net/view/1065.html)  
-  
-**选项：**  
-```shell  
-    -d 秒数：指定 top 命令每隔几秒更新。默认是 3 秒；  
-    -b：使用批处理模式输出。一般和"-n"选项合用，用于把 top 命令重定向到文件中；  
-    -n 次数：指定 top 命令执行的次数。一般和"-"选项合用；  
-    -p 进程PID：仅查看指定 ID 的进程；  
-    -s：使 top 命令在安全模式中运行，避免在交互模式中出现错误；  
-    -u 用户名：只监听某个用户的进程；  
-```  
-  
-在 top 命令的显示窗口中，还可以使用如下按键，进行一下交互操作：  
-```shell  
-    ? 或 h：显示交互模式的帮助；  
-    P：按照 CPU 的使用率排序，默认就是此选项；  
-    M：按照内存的使用率排序；  
-    N：按照 PID 排序；  
-    T：按照 CPU 的累积运算时间排序，也就是按照 TIME+ 项排序；  
-    k：按照 PID 给予某个进程一个信号。一般用于中止某个进程，信号 9 是强制中止的信号；  
-    r：按照 PID 给某个进程重设优先级（Nice）值；  
-    q：退出 top 命令；  
-    1：将cpu核心展开显示，而不是统计显示  
-    H：切换到线程状态，再按切回到任务状态  
-    F：选择指定的列显示  
-    U：筛选用户  
-    V：按照树状图显示  
-```  
-  
-**第一部分的作用**  
-```shell  
-第一行为任务队列信息  
-    12:26:46	                       系统当前时间  
-    up 1 day, 13:32	                系统的运行时间.本机己经运行 1 天 13 小时 32 分钟  
-    2 users	                        当前登录了两个用户  
-    load average: 0.00,0.00，0.00	系统在之前 1 分钟、5 分钟、15 分钟的平均负载。如果 CPU 是单核的，则这个数值超过 1 就是高负载：如果 CPU 是四核的，则这个数值超过 4 就是高负载 （这个平均负载完全是依据个人经验来进行判断的，一般认为不应该超过服务器 CPU 的核数）  
-  
-第二行为进程信息  
-    Tasks: 95 total	系统中的进程总数  
-    1 running	    正在运行的进程数  
-    94 sleeping	    睡眠的进程数  
-    0 stopped	    正在停止的进程数  
-    0 zombie	    僵尸进程数。如果不是 0，则需要手工检查僵尸进程  
-  
-第三行为 CPU 信息  
-    Cpu(s): 0.1 %us	用户模式占用的 CPU 百分比  
-    0.1%sy	        系统模式占用的 CPU 百分比  
-    0.0%ni	        改变过优先级的用户进程占用的 CPU 百分比  
-    99.7%id	        空闲 CPU 占用的 CPU 百分比  
-    0.1%wa	        等待输入/输出的进程占用的 CPU 百分比  
-    0.0%hi	        硬中断请求服务占用的 CPU 百分比  
-    0.1%si	        软中断请求服务占用的 CPU 百分比  
-    0.0%st	        st（steal time）意为虚拟时间百分比，就是当有虚拟机时，虚拟 CPU 等待实际 CPU 的时间百分比  
-  
-第四行为物理内存信息  
-    Mem: 625344k total	物理内存的总量，单位为KB  
-    571504k used	    己经使用的物理内存数量  
-    53840k&ee	        空闲的物理内存数量。我们使用的是虚拟机，共分配了 628MB内存，所以只有53MB的空闲内存  
-    65800k buffers	    作为缓冲的内存数量  
-  
-第五行为交换分区（swap）信息  
-    Swap: 524280k total	交换分区（虚拟内存）的总大小  
-    Ok used	            已经使用的交换分区的大小  
-    524280k free	    空闲交换分区的大小  
-    409280k cached	    作为缓存的交换分区的大小  
-  
-  
-我们还要解释一下缓冲（buffer）和缓存（cache）的区别：  
-缓存（cache）是在读取硬盘中的数据时，把最常用的数据保存在内存的缓存区中，再次读取该数据时，就不去硬盘中读取了，而在缓存中读取。  
-缓冲（buffer）是在向硬盘写入数据时，先把数据放入缓冲区,然后再一起向硬盘写入，把分散的写操作集中进行，减少磁盘碎片和硬盘的反复寻道，从而提高系统性能。  
-简单来说，缓存（cache）是用来加速数据从硬盘中"读取"的，而缓冲（buffer）是用来加速数据"写入"硬盘的。  
-```  
-  
-**第二部分的作用**  
-```shell  
-top 命令的第二部分输出，主要是系统进程信息，各个字段的含义如下：  
-    PID：进程的 ID。  
-    USER：该进程所属的用户。  
-    PR：优先级，数值越小优先级越高。  
-    NI：优先级，数值越小、优先级越高。  
-    VIRT：该进程使用的虚拟内存的大小，单位为 KB。  
-    RES：该进程使用的物理内存的大小，单位为 KB。  
-    SHR：共享内存大小，单位为 KB。  
-    S：进程状态。  
-    %CPU：该进程占用 CPU 的百分比。  
-    %MEM：该进程占用内存的百分比。  
-    TIME+：该进程共占用的 CPU 时间。  
-    COMMAND：进程的命令名。  
-```  
-Linux系统可以使用 htop ，与 top 功能类似  
-
 #### core dump
 [Ubuntu 20 core dumped（核心已转储）问题分析](https://blog.csdn.net/scjdas/article/details/128585787)
 
@@ -1338,18 +1242,6 @@ hexdump: [-bcCdovx] [-e fmt] [-f fmt_file] [-n length] [-s skip] [file ...]
 -x  双字节十六进制显示  
 ```  
   
-#### nc  
-```shell  
-nc [-hlnruz][-g<网关...>][-G<指向器数目>][-i<延迟秒数>][-o<输出文件>][-p<通信端口>][-s<来源位址>][-v...][-w<超时秒数>][主机名称][通信端口...]  
-使用示例：  
-nc <ip> <port>  连接指定IP和端口  
-nc -l <port> 监听本地端口  
--u: 使用udp协议传输，不带该参数默认使用tcp协议  
-传输文件：  
-nc <ip> <port> < <fileName>  
-nc -l <port> > <fileName>  
-```  
-  
 #### ldd  
 ```shell  
 ldd命令用于打印可执行文件或者库文件所依赖的共享库列表。  
@@ -1366,101 +1258,110 @@ ldd(选项)(参数)
 #### ar  
     ar命令可以用来创建、修改库，也可以从库中提出单个模块。  
   
-#### netstat  
+#### 查看程序搜索库的路径  
+LD_DEBUG1.LD_DEBUG使用方法如下:  
+LD_DEBUG=libs ./app  
+LD_DEBUG=libs help 查看命令使用方法  
+
+### Linux系统性能分析
+
+#### top 使用技巧  
+top -H 按照线程查看，或者启动top之后按 H 也可以  
+top 按照进程查看  
+top -H | grep <> 按照筛选项查看  
+  
+参考博客： [Linux top命令详解：持续监听进程运行状态](http://c.biancheng.net/view/1065.html)  
+  
+**选项：**  
 ```shell  
-netstat -atulnp会显示所有端口和所有对应的程序，用grep管道可以过滤出想要的字段  
-    -a ：all，表示列出所有的连接，服务监听，Socket资料  
-    -t ：tcp，列出tcp协议的服务  
-    -u ：udp，列出udp协议的服务  
-    -n ：port number， 用端口号来显示  
-    -l ：listening，列出当前监听服务  
-    -p ：program，列出服务程序的PID  
+    -d 秒数：指定 top 命令每隔几秒更新。默认是 3 秒；  
+    -b：使用批处理模式输出。一般和"-n"选项合用，用于把 top 命令重定向到文件中；  
+    -n 次数：指定 top 命令执行的次数。一般和"-"选项合用；  
+    -p 进程PID：仅查看指定 ID 的进程；  
+    -s：使 top 命令在安全模式中运行，避免在交互模式中出现错误；  
+    -u 用户名：只监听某个用户的进程；  
 ```  
   
-#### ssh 隧道  
-**正向隧道**  
-client    --> server  
-localssh  <-> remotessh  
+在 top 命令的显示窗口中，还可以使用如下按键，进行一下交互操作：  
 ```shell  
-ssh -N -f [-g] -L <locIP>:<locPort>:<remoteIP>:<remotePort> <remoteUserName>@<remoteIP> -p <sshPort>  
-其中：  
--N: 表示不登陆 remote 设备  
--f: 表示后台运行，终端退出也在后台运行  
--g: 开启网关功能，开启该选项可以监听当前主机所有IP的 <locPort>  
-<locIP>: locIP可以缺省，此时默认 127.0.0.1，但这种情况下只能在本机访问 <locPort> 端口，来访问远程主机。如果想其他设备访问 本机，进而转发到 远程主机，则 <locIP> 需要改为本机在网络中的IP  
+    ? 或 h：显示交互模式的帮助；  
+    P：按照 CPU 的使用率排序，默认就是此选项；  
+    M：按照内存的使用率排序；  
+    N：按照 PID 排序；  
+    T：按照 CPU 的累积运算时间排序，也就是按照 TIME+ 项排序；  
+    k：按照 PID 给予某个进程一个信号。一般用于中止某个进程，信号 9 是强制中止的信号；  
+    r：按照 PID 给某个进程重设优先级（Nice）值；  
+    q：退出 top 命令；  
+    1：将cpu核心展开显示，而不是统计显示  
+    H：切换到线程状态，再按切回到任务状态  
+    F：选择指定的列显示  
+    U：筛选用户  
+    V：按照树状图显示  
 ```  
   
-**反向隧道**  
-场景：  
-在 client 无法访问到 server 的 IP 时，但是 server 可以访问到 client时，可能需要从 server 建立反向隧道。  
-典型的情况时有两台公网IP的主机，一台在 server 的环境中（IPA），另一台在其他环境中（IPB），server可以访问到IPA和IPB，但是IPA没有权限，IPB有权限，反之，IPB无法访问 server，此时需要建立反向隧道  
-client     --> server  
-remotessh  <-> localssh  
+**第一部分的作用**  
 ```shell  
-ssh -N -f -R <remoteIP>:<remotePort>:<locIP>:<locPort> <remoteUserName>@<remoteIP> -p <sshPort>  
-其中：  
-<remoteIP>: 可以缺省不写，因为无论写不写都只能监听 remote 主机的 127.0.0.1 即：remote 主机不能被当作跳板，即便开启 -g 也不行  
+第一行为任务队列信息  
+    12:26:46	                       系统当前时间  
+    up 1 day, 13:32	                系统的运行时间.本机己经运行 1 天 13 小时 32 分钟  
+    2 users	                        当前登录了两个用户  
+    load average: 0.00,0.00，0.00	系统在之前 1 分钟、5 分钟、15 分钟的平均负载。如果 CPU 是单核的，则这个数值超过 1 就是高负载：如果 CPU 是四核的，则这个数值超过 4 就是高负载 （这个平均负载完全是依据个人经验来进行判断的，一般认为不应该超过服务器 CPU 的核数）  
+  
+第二行为进程信息  
+    Tasks: 95 total	系统中的进程总数  
+    1 running	    正在运行的进程数  
+    94 sleeping	    睡眠的进程数  
+    0 stopped	    正在停止的进程数  
+    0 zombie	    僵尸进程数。如果不是 0，则需要手工检查僵尸进程  
+  
+第三行为 CPU 信息  
+    Cpu(s): 0.1 %us	用户模式占用的 CPU 百分比  
+    0.1%sy	        系统模式占用的 CPU 百分比  
+    0.0%ni	        改变过优先级的用户进程占用的 CPU 百分比  
+    99.7%id	        空闲 CPU 占用的 CPU 百分比  
+    0.1%wa	        等待输入/输出的进程占用的 CPU 百分比  
+    0.0%hi	        硬中断请求服务占用的 CPU 百分比  
+    0.1%si	        软中断请求服务占用的 CPU 百分比  
+    0.0%st	        st（steal time）意为虚拟时间百分比，就是当有虚拟机时，虚拟 CPU 等待实际 CPU 的时间百分比  
+  
+第四行为物理内存信息  
+    Mem: 625344k total	物理内存的总量，单位为KB  
+    571504k used	    己经使用的物理内存数量  
+    53840k&ee	        空闲的物理内存数量。我们使用的是虚拟机，共分配了 628MB内存，所以只有53MB的空闲内存  
+    65800k buffers	    作为缓冲的内存数量  
+  
+第五行为交换分区（swap）信息  
+    Swap: 524280k total	交换分区（虚拟内存）的总大小  
+    Ok used	            已经使用的交换分区的大小  
+    524280k free	    空闲交换分区的大小  
+    409280k cached	    作为缓存的交换分区的大小  
+  
+  
+我们还要解释一下缓冲（buffer）和缓存（cache）的区别：  
+缓存（cache）是在读取硬盘中的数据时，把最常用的数据保存在内存的缓存区中，再次读取该数据时，就不去硬盘中读取了，而在缓存中读取。  
+缓冲（buffer）是在向硬盘写入数据时，先把数据放入缓冲区,然后再一起向硬盘写入，把分散的写操作集中进行，减少磁盘碎片和硬盘的反复寻道，从而提高系统性能。  
+简单来说，缓存（cache）是用来加速数据从硬盘中"读取"的，而缓冲（buffer）是用来加速数据"写入"硬盘的。  
 ```  
   
-#### iperf3  
+**第二部分的作用**  
 ```shell  
-（1）-s,--server：iperf服务器模式，默认启动的监听端口为5201，eg：iperf -s  
-（2）-c,--client host：iperf客户端模式，host是server端地址，eg：iperf -c 222.35.11.23  
-（3）-i，--interval：指定每次报告之间的时间间隔，单位为秒，eg：iperf3 -c 192.168.12.168 -i 2  
-（4）-p，--port：指定服务器端监听的端口或客户端所连接的端口，默认是5001端口。  
-（5）-u，--udp：表示采用UDP协议发送报文，不带该参数表示采用TCP协议。  
-（6）-l，--len：设置读写缓冲区的长度，单位为 Byte。TCP方式默认为8KB，UDP方式默认为1470字节。通常测试 PPS 的时候该值为16，测试BPS时该值为1400。  
-（7）-b，--bandwidth [K|M|G]：指定UDP模式使用的带宽，单位bits/sec，默认值是1 Mbit/sec。  
-（8）-t，--time：指定数据传输的总时间，即在指定的时间内，重复发送指定长度的数据包。默认10秒。  
-（9）-A：CPU亲和性，可以将具体的iperf3进程绑定对应编号的逻辑CPU，避免iperf进程在不同的CPU间调度。  
-  
-举例：  
-#iperf3 -s -p <serPort> -i 1  
-#iperf3 -c <serIP> -p <serPort> -i 1 -t 60  
-Interval表示时间间隔。  
-Transfer表示时间间隔里面转输的数据量。  
-Bandwidth是时间间隔里的传输速率。  
+top 命令的第二部分输出，主要是系统进程信息，各个字段的含义如下：  
+    PID：进程的 ID。  
+    USER：该进程所属的用户。  
+    PR：优先级，数值越小优先级越高。  
+    NI：优先级，数值越小、优先级越高。  
+    VIRT：该进程使用的虚拟内存的大小，单位为 KB。  
+    RES：该进程使用的物理内存的大小，单位为 KB。  
+    SHR：共享内存大小，单位为 KB。  
+    S：进程状态。  
+    %CPU：该进程占用 CPU 的百分比。  
+    %MEM：该进程占用内存的百分比。  
+    TIME+：该进程共占用的 CPU 时间。  
+    COMMAND：进程的命令名。  
 ```  
-  
-#### 网络问题总结  
-**软件**  
-断连问题ping,telnet,nc,websocat，postman  
-端口问题telnet,netstat,nmap  
-流量问题nethogs  
-udp问题iptraf  
-带宽问题iperf3,speedtest  
-DNS问题ping,tcping,dig,nslookup  
-路由问题traceroute,route  
-延时问题ping,tcping  
-运营商问题:切换不同的代理出口  
-抓包问题：tcpdump，wireshark，fiddler  
-  
-**硬件**  
-替换法，替换稳定的器件或者稳定的通路  
-验证原先的通路是否有问题  
-ifconfig  
-ethtool  
-nmcli  
-  
-#### perf （Linux性能分析工具）  
-https://blog.csdn.net/cyq6239075/article/details/104371328  
-Perf包含22种子工具的工具集，以下是最常用的5种：  
-Perf-list：用来查看perf所支持的性能事件，有软件的也有硬件的。  
-perf-stat：用于分析指定程序的性能概况。  
-perf-top：对于一个指定的性能事件(默认是CPU周期)，显示消耗最多的函数或指令。  
-perf-record：收集采样信息，并将其记录在数据文件中。随后可以通过其它工具(perf-report)对数据文件进行分析，结果类似于perf-top的。  
-perf-report：读取perf record创建的数据文件，并给出热点分析结果。  
-  
-Tips:  
-任务调度追踪  
-sudo perf record -e context-switches -ag  
-sudo perf report -n --stdio -f  
-  
-生成timechart  
-sudo perf sched record -a  
-sudo perf timechart  
-  
-  
+Linux系统可以使用 htop ，与 top 功能类似  
+
+
 #### 火焰图  
 https://zhuanlan.zhihu.com/p/54276509  
 https://blog.csdn.net/u013919153/article/details/110559888  
@@ -1524,11 +1425,159 @@ x 轴表示抽样数，如果一个函数在 x 轴占据的宽度越宽，就表
 sudo trace-cmd record -e 'sched_wakeup*' -e sched_switch -e 'sched_migrate*'  
 kernelshark trace.dat  
   
-#### 查看程序搜索库的路径  
-LD_DEBUG1.LD_DEBUG使用方法如下:  
-LD_DEBUG=libs ./app  
-LD_DEBUG=libs help 查看命令使用方法  
+
+### Linux网络工具
+
+#### 网络问题总结  
+**软件**  
+断连问题ping,telnet,nc,websocat，postman  
+端口问题telnet,netstat,nmap  
+流量问题nethogs  
+udp问题iptraf  
+带宽问题iperf3,speedtest  
+DNS问题ping,tcping,dig,nslookup  
+路由问题traceroute,route  
+延时问题ping,tcping  
+运营商问题:切换不同的代理出口  
+抓包问题：tcpdump，wireshark，fiddler  
   
+**硬件**  
+替换法，替换稳定的器件或者稳定的通路  
+验证原先的通路是否有问题  
+ifconfig  
+ethtool  
+nmcli  
+
+#### nc  
+```shell  
+nc [-hlnruz][-g<网关...>][-G<指向器数目>][-i<延迟秒数>][-o<输出文件>][-p<通信端口>][-s<来源位址>][-v...][-w<超时秒数>][主机名称][通信端口...]  
+使用示例：  
+nc <ip> <port>  连接指定IP和端口  
+nc -l <port> 监听本地端口  
+-u: 使用udp协议传输，不带该参数默认使用tcp协议  
+传输文件：  
+nc <ip> <port> < <fileName>  
+nc -l <port> > <fileName>  
+```  
+  
+
+#### netstat  
+```shell  
+netstat -atulnp会显示所有端口和所有对应的程序，用grep管道可以过滤出想要的字段  
+    -a ：all，表示列出所有的连接，服务监听，Socket资料  
+    -t ：tcp，列出tcp协议的服务  
+    -u ：udp，列出udp协议的服务  
+    -n ：port number， 用端口号来显示  
+    -l ：listening，列出当前监听服务  
+    -p ：program，列出服务程序的PID  
+```  
+  
+#### ssh 隧道  
+**正向隧道**  
+client    --> server  
+localssh  <-> remotessh  
+```shell  
+ssh -N -f [-g] -L <locIP>:<locPort>:<remoteIP>:<remotePort> <remoteUserName>@<remoteIP> -p <sshPort>  
+其中：  
+-N: 表示不登陆 remote 设备  
+-f: 表示后台运行，终端退出也在后台运行  
+-g: 开启网关功能，开启该选项可以监听当前主机所有IP的 <locPort>  
+<locIP>: locIP可以缺省，此时默认 127.0.0.1，但这种情况下只能在本机访问 <locPort> 端口，来访问远程主机。如果想其他设备访问 本机，进而转发到 远程主机，则 <locIP> 需要改为本机在网络中的IP  
+```  
+  
+**反向隧道**  
+场景：  
+在 client 无法访问到 server 的 IP 时，但是 server 可以访问到 client时，可能需要从 server 建立反向隧道。  
+典型的情况时有两台公网IP的主机，一台在 server 的环境中（IPA），另一台在其他环境中（IPB），server可以访问到IPA和IPB，但是IPA没有权限，IPB有权限，反之，IPB无法访问 server，此时需要建立反向隧道  
+client     --> server  
+remotessh  <-> localssh  
+```shell  
+ssh -N -f -R <remoteIP>:<remotePort>:<locIP>:<locPort> <remoteUserName>@<remoteIP> -p <sshPort>  
+其中：  
+<remoteIP>: 可以缺省不写，因为无论写不写都只能监听 remote 主机的 127.0.0.1 即：remote 主机不能被当作跳板，即便开启 -g 也不行  
+```  
+  
+#### perf （Linux性能分析工具）  
+https://blog.csdn.net/cyq6239075/article/details/104371328  
+Perf包含22种子工具的工具集，以下是最常用的5种：  
+Perf-list：用来查看perf所支持的性能事件，有软件的也有硬件的。  
+perf-stat：用于分析指定程序的性能概况。  
+perf-top：对于一个指定的性能事件(默认是CPU周期)，显示消耗最多的函数或指令。  
+perf-record：收集采样信息，并将其记录在数据文件中。随后可以通过其它工具(perf-report)对数据文件进行分析，结果类似于perf-top的。  
+perf-report：读取perf record创建的数据文件，并给出热点分析结果。  
+  
+Tips:  
+任务调度追踪  
+sudo perf record -e context-switches -ag  
+sudo perf report -n --stdio -f  
+  
+生成timechart  
+sudo perf sched record -a  
+sudo perf timechart  
+  
+  
+  
+#### iperf3  
+```shell  
+（1）-s,--server：iperf服务器模式，默认启动的监听端口为5201，eg：iperf -s  
+（2）-c,--client host：iperf客户端模式，host是server端地址，eg：iperf -c 222.35.11.23  
+（3）-i，--interval：指定每次报告之间的时间间隔，单位为秒，eg：iperf3 -c 192.168.12.168 -i 2  
+（4）-p，--port：指定服务器端监听的端口或客户端所连接的端口，默认是5001端口。  
+（5）-u，--udp：表示采用UDP协议发送报文，不带该参数表示采用TCP协议。  
+（6）-l，--len：设置读写缓冲区的长度，单位为 Byte。TCP方式默认为8KB，UDP方式默认为1470字节。通常测试 PPS 的时候该值为16，测试BPS时该值为1400。  
+（7）-b，--bandwidth [K|M|G]：指定UDP模式使用的带宽，单位bits/sec，默认值是1 Mbit/sec。  
+（8）-t，--time：指定数据传输的总时间，即在指定的时间内，重复发送指定长度的数据包。默认10秒。  
+（9）-A：CPU亲和性，可以将具体的iperf3进程绑定对应编号的逻辑CPU，避免iperf进程在不同的CPU间调度。  
+  
+举例：  
+#iperf3 -s -p <serPort> -i 1  
+#iperf3 -c <serIP> -p <serPort> -i 1 -t 60  
+Interval表示时间间隔。  
+Transfer表示时间间隔里面转输的数据量。  
+Bandwidth是时间间隔里的传输速率。  
+```  
+  
+
+#### arp
+
+reference: [ARP协议原理](https://zhuanlan.zhihu.com/p/59066874)
+
+**arp原理**
+
+ARP协议是地址解析协议（Address Resolution Protocol）是通过解析IP地址得到MAC地址的，它与网卡有着极其密切的关系，在TCP/IP分层结构中，把ARP划分为网络层，因为在网络层看来，源主机与目标主机是通过IP地址进行识别的，而所有的数据传输又依赖网卡底层硬件，即链路层，那么就需要将这些IP地址转换为链路层可以识别的东西，在所有的链路中都有着自己的一套寻址机制，如在以太网中使用MAC地址进行寻址，以标识不同的主机，那么就需要有一个协议将IP地址转换为MAC地址，由此就出现了ARP协议，所有ARP协议在网络层被应用，它是网络层与链路层连接的重要枢纽，每当有一个数据要发送的时候都需要在通过ARP协议将IP地址转换成MAC地址，在IP层及其以上的层次看来，他们只标识IP地址，从不跟硬件打交道。
+
+ARP缓存表，是为了实现IP地址与MAC地址的查询与转换引入的的概念，每台主机或路由器在维护着一个ARP缓存表（ARP table），这个表包含IP地址到MAC地址的映射关系，表中记录了`<IP地址，MAC地址>`对，他们是主机最近运行时获得关于其他主机的IP地址到MAC地址的映射，当需要发送数据的时候，主机就会根据数据报中的目标IP地址信息，然后在ARP缓存表中进行查找对应的MAC地址，最后通过网卡将数据发送出去。ARP缓存表包含一个寿命值（TTL，也称作生存时间），它将记录每个ARP表项的生存时间，生存时间到了就会从缓存表中删除。从一个表项放置到ARP缓存表中开始，一个表项通常的生存时间一般是10分钟吗，当然，这些生存时间是可以任意设置的，一般使用默认即可。
+
+当主机开机的时候，ARP缓存表肯定是空的，那么怎么一步步建立 ARP表项呢？如果没有ARP表项，那么主机就会去建立ARP表项。
+* 对于局域网，如果向局域网中的某个电脑发送一个数据，那么就会从已有的ARP缓存表中寻找这个IP地址对应的物理地址的ARP表项，然后直接将数据写入以太网数据帧中让网卡进行发送即可，而如果没有找到这个IP地址，那么这个数据就没法立即发送，电脑会先在局域网上广播一个ARP请求（目标MAC地址为FF-FF-FF-FF-FF-FF），广播的ARP请求发出后，处于同一局域网内的所有主机都会接收到这个请求，如果目标IP地址与接收到ARP请求的主机自身IP地址吻合就会返回一个ARP应答，告诉请求者（即我的电脑）自身的MAC地址，当我的电脑收到这个ARP应答后，就去建立一个ARP表项，并且重新将数据发送出去。  
+ARP协议的核心就是对缓存表的操作，发送数据包的时候，查找ARP缓存表以得到对应的MAC地址，在ARP缓存表中的TTL即将过期的时候更新缓存表以保证ARP表项有效，此外ARP协议还需要不断处理来自局域网中其他主机的ARP请求。
+
+* 对于公网，因为当前电脑与服务器主机不在一个网段，电脑查询自己的路由表，知道如果想和服务器主机通信则必须通过网关（gateway）来中转，所以会在与网关直连的网卡上请求网关的MAC地址，因为电脑要把发给服务器主机的数据先发给网关，当合法以太帧到达网关并且顺利接收后，网关会将数据递交给IP层，IP层查询路由表，找到与服务器主机直连的接口（假设是直连的，实际上肯定不是直连的），网关会发一个ARP请求到服务器主机上，请求它的MAC地址，网关收到应答后将建立新的ARP表项并将开始维护ARP缓存表，然后完成最终的通信。因此这里服务器的缓存表是建立在网关中的，当前电脑只需要将数据和要请求的服务器地址发给网关。
+
+ARP缓存表的超时处理，ARP是动态处理的，ARP表项的生存时间是一般为5-10分钟（LwIP中默认是5分钟），而ARP请求的等待时间是5秒钟，当这些时间到达后，就会更新ARP表项，如果在物理链路层无法连通则会删除表项。因此每个协议栈的实现都必须维护着一个定时器（超时机制）来管理ARP缓存表，在必要的时候更新及删除ARP表项。  
+题外话：因为ARP协议是一个动态的协议，很多网络攻击都是利用ARP协议进行的，如ARP欺骗，ARP洪水攻击等等，而且这种攻击是很难防御的，当然也有办法，直接将动态的ARP缓存表设置为静态就行了，但是这就违背了ARP协议的动态地址解析特性。
+
+**语法**
+
+`arp <opt> <para>`
+
+**选项**
+
+```
+-a # 主机 ：显示 arp 缓冲区的所有条目；
+-H # 地址类型 ：指定 arp 指令使用的地址类型；
+-d # 主机 ：从 arp 缓冲区中删除指定主机的 arp 条目；
+-D # 使用指定接口的硬件地址；
+-e # 以 Linux 的显示风格显示 arp 缓冲区中的条目；
+-i # 接口 ：指定要操作 arp 缓冲区的网络接口；
+-s # 主机 MAC 地址 ：设置指定的主机的 IP 地址与 MAC 地址的静态映射；
+-n # 以数字方式显示 arp 缓冲区中的条目；
+-v # 显示详细的 arp 缓冲区条目，包括缓冲区条目的统计信息；
+-f # 文件 ：设置主机的 IP 地址与 MAC 地址的静态映射。
+```
+
+
+
 ## 交叉编译环境  
 参考博客： https://blog.csdn.net/jpy1391/article/details/113798059  
 交叉编译就是在一种平台上编译出能运行在体系结构不同的另一种平台上的程序，比如在PC平台（X86 CPU）上编译出能运行在以ARM为内核的CPU平台上的程序，编译得到的程序在X86 CPU平台上是不能运行的，必须放到ARM CPU平台上才能运行，虽然两个平台用的都是Linux系统。 交叉编译工具链是一个由编译器、连接器和解释器组成的综合开发环境，交叉编译工具链主要由binutils、gcc和glibc三个部分组成。有时出于减小 libc 库大小的考虑，也可以用别的 c 库来代替 glibc，例如 uClibc、dietlibc 和 newlib。  
