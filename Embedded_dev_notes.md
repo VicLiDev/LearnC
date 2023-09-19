@@ -1362,6 +1362,291 @@ top 命令的第二部分输出，主要是系统进程信息，各个字段的�
 Linux系统可以使用 htop ，与 top 功能类似  
 
 
+#### android 系统性能分析
+
+referendes:  
+[系统跟踪概览](https://developer.android.google.cn/topic/performance/tracing/?hl=zh-cn)  
+[]()
+
+##### ftrace
+
+函数跟踪（function trace）这是Linux内核提供的功能，所有使用Linux内核的系统都有该功能（包括Linux和Android），其功能远不止名称所包含的内容，它可以用于测量处理中断所需要的时间、跟踪耗时函数、计算激活高优先级任务的时间、跟踪上下文切换等。具体使用方法可以参考书籍《Linux设备驱动开发》（[美]约翰·马德奥 李强 译）(已购)。也可参考内核文档：[ftrace.rst](https://www.kernel.org/doc/Documentation/trace/ftrace.txt)
+
+##### atrace
+
+reference:  
+[Android atrace使用说明(Android sdk中的systrace)](http://bcoder.com/java/android-atrace-systrace-usage-instruction)  
+[Android atrace/systrace的使用](https://juejin.cn/post/7053395801510248455)
+
+Android tracer，使用ftrace来跟踪Android上层的函数调用。为数据采集部分
+
+```
+rk3588_s:/ # atrace -h
+atrace: invalid option -- h
+
+usage: atrace [options] [categories...]
+options include:
+  -a appname      enable app-level tracing for a comma separated list of cmdlines; * is a wildcard matching any process
+  -b N            use a trace buffer size of N KB
+  -c              trace into a circular buffer
+  -f filename     use the categories written in a file as space-separated
+                    values in a line
+  -k fname,...    trace the listed kernel functions
+  -n              ignore signals
+  -s N            sleep for N seconds before tracing [default 0]
+  -t N            trace for N seconds [default 5]
+  -z              compress the trace dump
+  --async_start   start circular trace and return immediately
+  --async_dump    dump the current contents of circular trace buffer
+  --async_stop    stop tracing and dump the current contents of circular
+                    trace buffer
+  --stream        stream trace to stdout as it enters the trace buffer
+                    Note: this can take significant CPU time, and is best
+                    used for measuring things that are not affected by
+                    CPU performance, like pagecache usage.
+  --list_categories
+                  list the available tracing categories
+ -o filename      write the trace to the specified file instead
+                    of stdout.
+```
+
+`atrace  --list_categories` 可以查看更多策略
+
+```
+1|rk3588_s:/ # atrace  --list_categories
+         gfx - Graphics
+       input - Input
+        view - View System
+     webview - WebView
+          wm - Window Manager
+          am - Activity Manager
+          sm - Sync Manager
+       audio - Audio
+       video - Video
+      camera - Camera
+         hal - Hardware Modules
+         res - Resource Loading
+      dalvik - Dalvik VM
+          rs - RenderScript
+      bionic - Bionic C Library
+       power - Power Management
+          pm - Package Manager
+          ss - System Server
+    database - Database
+     network - Network
+         adb - ADB
+    vibrator - Vibrator
+        aidl - AIDL calls
+       nnapi - NNAPI
+         rro - Runtime Resource Overlay
+         pdx - PDX services
+       sched - CPU Scheduling
+         irq - IRQ Events
+         i2c - I2C Events
+        freq - CPU Frequency
+        idle - CPU Idle
+        disk - Disk I/O
+         mmc - eMMC commands
+        load - CPU Load
+        sync - Synchronization
+       workq - Kernel Workqueues
+  memreclaim - Kernel Memory Reclaim
+  regulators - Voltage and Current Regulators
+  binder_driver - Binder Kernel driver
+  binder_lock - Binder global lock trace
+   pagecache - Page cache
+      memory - Memory
+     thermal - Thermal event
+```
+
+```
+ex: atrace -z -b 4000 gfx input view webview wm am camera hal res audio video dalvik rs ss sched freq idle disk mmc -t 15 > /data/trace_output
+```
+
+
+
+##### systrace
+
+systrace：Android的 trace 数据分析工具，将 atrace 采集上来的数据，以图形化的方式展现出来。
+
+Systrace实际上是一些工具的集合，在设备端使用atrace来控制用户空间的tracing和设置ftrace，kernel中使用tracing机制进行数据采集。Systrace最终读取ftrace的buffer，然后将数据打包以HTML文件的方式呈现。
+
+```
+downlaod https://android.googlesource.com/platform/external/chromium-trace/+/6de8cfafb37437313122d1d78536749c02c3398c/systrace.py
+
+./systrace.py --from-file trace_output -o trace_output.html
+```
+
+```
+reference: https://juejin.cn/post/7053395801510248455
+
+按键操作       作用
+w             放大，[+shift]速度更快
+s             缩小，[+shift]速度更快
+a             左移，[+shift]速度更快
+d             右移，[+shift]速度更快
+
+f             放大当前选定区域
+m             标记当前选定区域
+v             高亮VSync
+g             切换是否显示60hz的网格线
+0             恢复trace到初始态，这里是数字0而非字母o
+
+h             切换是否显示详情
+/             搜索关键字
+enter　　　　　　显示搜索结果，可通过← →定位搜索结果
+`             显示/隐藏脚本控制台
+?             显示帮助功能
+```
+
+
+##### Perfetto
+
+reference:  
+[Android 系统使用 Perfetto 抓取 trace 教程](https://zhuanlan.zhihu.com/p/508526020)  
+[Perfetto工具使用简介](https://www.jianshu.com/p/ab22238a9ab1)
+
+Perfetto工具是Android下一代全新的统一的trace收集和分析框架，可以抓取平台和app的trace信息，是用来取代systrace的，但systrace由于历史原因也还会一直存在，并且Perfetto抓取的trace文件也可以同样转换成systrace视图，如果习惯用systrace的，可以用Perfetto UI的"Open with legacy UI"转换成systrace视图来看
+
+Perfetto 是基于 Android 的系统追踪服务， 这个配置在 Android11(R) 之后是默认打开的，但是如果你是 Android 9 (P) 或者 10 (Q) ，那么就需要手动设置一下相应的 prop 属性。
+
+```shell
+# Needed only on Android 9 (P) and 10 (Q) on non-Pixel phones.
+adb shell setprop persist.traced.enable 1
+```
+在设置完 trace 服务可用后，下面我们就可以开始抓取相应的 trace 了。目前，主要有两个方式可以实现 trace 抓取。一个是通过命令行抓取，一个是通过 Perfetto UI 在线抓取。
+
+###### 命令行抓取
+
+命令行抓取 trace 方式的前提是你的电脑是已经安装了 adb 驱动，电脑能够通过 adb 命令成功连接到你的 Android 设备
+
+使用命令行抓取又可以分为两种方式：
+* 使用 Android 设备预置的 perfetto 执行程序
+* 使用谷歌推荐的 record_android_trace 脚本
+
+执行抓取命令：
+```shell
+adb shell perfetto -o /data/trace_file.perfetto-trace -t 5s sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory
+
+其中：
+-o /data/trace_file.perfetto-trace
+# -o 表示抓取文件的输出目录，这里我们是输出到 /data/ 目录下的 trace_file.perfetto-trace 文件。
+-t 5s
+# -t 表示抓取的时间，这里设置了 5s，默认情况下是 10s。
+sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory
+# 这里表示我们想要抓 trace 的相关模块。
+```
+
+注意: 如果通过 adb shell perfetto 的方式抓取 trace ，需要我们手动执行 ctrl + c 结束我们的抓取操作。抓取的文件被保存在了 /data/trace_file.perfetto-trace 中。
+
+抓取成功之后可以将文件放到网站可视化页面上显示（https://ui.perfetto.dev/#!/viewer）
+
+另外命令行执行较复杂，我们可以通过 config 文件执行，Perfetto 为我们提供了一种更方便更加灵活的配置化式的 trace 抓取方案： trace config 。让我们先来看一下官方提供的 config 样例 config.pbtx：
+```
+# perfetto run time
+duration_ms: 5000
+
+buffers: {
+    size_kb: 8960
+    fill_policy: DISCARD
+}
+buffers: {
+    size_kb: 1280
+    fill_policy: DISCARD
+}
+data_sources: {
+    config {
+        name: "linux.ftrace"
+        ftrace_config {
+            ftrace_events: "sched/sched_switch"
+            ftrace_events: "power/suspend_resume"
+            ftrace_events: "sched/sched_process_exit"
+            ftrace_events: "sched/sched_process_free"
+            ftrace_events: "task/task_newtask"
+            ftrace_events: "task/task_rename"
+            ftrace_events: "ftrace/print"
+            atrace_categories: "gfx"
+            atrace_categories: "view"
+            atrace_categories: "webview"
+            atrace_categories: "camera"
+            atrace_categories: "dalvik"
+            atrace_categories: "power"
+            atrace_categories: "sched"
+            atrace_categories: "freq"
+            atrace_categories: "idle"
+            atrace_categories: "am"
+            atrace_categories: "wm"
+            atrace_categories: "binder_driver"
+            atrace_categories: "hal"
+            atrace_categories: "input"
+            atrace_categories: "res"
+            atrace_categories: "memory"
+        }
+    }
+}
+data_sources: {
+    config {
+        name: "linux.process_stats"
+        target_buffer: 1
+        process_stats_config {
+            scan_all_processes_on_start: true
+        }
+    }
+    # Enable the data source only on Chrome and Chrome canary. maybe not work?
+    producer_name_filter: "com.android.chrome"
+    producer_name_filter: "com.google.chrome.canary"
+    # producer_name_filter: "mpi_dec_test -i /sdcard/benfan.h264"
+}
+```
+
+
+注意，这是一个以 .pbtx 为后缀名的文件，使用时，我们需要先将这个文件 push 到手机目录下，而后执行如下抓取命令：
+
+```shell
+adb push config.pbtx /sdcard/
+adb shell 'cat /sdcard/config.pbtx | perfetto --txt -c - -o /data/trace.perfetto-trace'
+# 这里 -c - 应该是指从管道获取配置，也可以按如下执行：
+adb shell perfetto --txt -c /sdcard/config.pbtx -o /data/trace.perfetto-trace
+```
+
+###### record_android_trace 抓取
+除了 adb shell perfetto 的方式，Perfetto 还帮我们提供了一个保姆式服务的抓取脚本 record_android_trace ，它其实跟 adb shell perfetto 是同样的效果，但是它帮我们实现了傻瓜式操作，只要执行下脚本命令，后续文件抓好后会自动导入网页解析展示出来，我们直接开始分析就行，这也是 Perfetto 推荐的抓取方法。
+
+record_android_trace 获取方式：
+```
+curl -O https://raw.githubusercontent.com/google/perfetto/master/tools/record_android_trace
+```
+搭配上面讲到的 config 方式，执行如下命令即课可开启抓取：
+```shell
+python record_android_trace.py -c config.pbtx -o trace_file.perfetto-trace
+```
+执行完上述命令后，脚本会自动帮我们把抓到的文件导入浏览器，并可视化展现，非常方便。
+
+###### Perfetto UI 抓取
+
+除了上面的命令行抓取方式外，Perfetto 还提供了一种网页抓取的方式 [Perfetto UI](https://ui.perfetto.dev/#!/record)。
+
+通过网页的方式抓取要保证电脑连接你的 Android 设备后，网页端也要识别到设备的存在。然后点击右侧的 Record new trace 即可开始抓取。如果我们需要配置抓取的规则，可以通过下面的配置页面进行设置，比如抓取时长，buffer 大小等。
+
+
+
+
+##### simpleperf
+
+Simpleperf 是 Android 的原生 CPU 分析工具。 它可用于分析 Android 应用程序和在 Android 上运行的本机进程。 simpleperf 可执行文件可以在 Android >=L 上运行，而 Python 脚本可以在 Android >= N 上使用。
+
+使用simpleperf采集数据
+```
+simpleperf record -p 348 -g --duration 10 -o /mnt/media_rw/sda1/simpleperf_mcu.data
+```
+
+将simpleperf_mcu.data拷贝到系统源码目录android/system/extras/simpleperf/scripts/
+cd android/system/extras/simpleperf/scripts/
+python report_sample.py simpleperf_mcu.data > simpleperf_mcu_report.data
+
+
+
+
 #### 火焰图  
 https://zhuanlan.zhihu.com/p/54276509  
 https://blog.csdn.net/u013919153/article/details/110559888  
@@ -1376,7 +1661,7 @@ https://blog.csdn.net/tugouxp/article/details/120165100
 **方法二**：挂接到已启动的进程  
 ```shell  
 # 使用PID监控程序  
-# sudo perf record -e cpu-clock -g -p pid  
+$ sudo perf record -e cpu-clock -g -p pid  
 # perf record 表示采集系统事件  
 # 没有使用 -e 指定采集事件, 则默认采集 cycles(即 CPU clock 周期)  
 # -F 99 表示每秒 99 次  
@@ -1386,10 +1671,10 @@ https://blog.csdn.net/tugouxp/article/details/120165100
 # -F 指定采样频率为 99Hz(每秒99次), 如果 99次 都返回同一个函数名, 那就说明 CPU 这一秒钟都在执行同一个函数, 可能存在性能问题.  
   
 # 如果svg图出现unknown函数，使用如下  
-# sudo perf record -e cpu-clock --call-graph dwarf -p pid  
+$ sudo perf record -e cpu-clock --call-graph dwarf -p pid  
   
 # 使用程序名监控程序  
-# sudo perf record -e cpu-clock -g -p `pgrep your_program`  
+$ sudo perf record -e cpu-clock -g -p `pgrep your_program`  
 ------------------------------------  
 使用ctrl+c中断perf进程，或者在命令最后加上参数 -- sleep n (n秒后停止-- 和sleep中间有空格)  
 perf record表示记录到文件，perf top直接会显示到界面  
@@ -1420,7 +1705,39 @@ x 轴表示抽样数，如果一个函数在 x 轴占据的宽度越宽，就表
 火焰图就是看顶层的哪个函数占据的宽度最大。只要有"平顶"（plateaus），就表示该函数可能存在性能问题。  
   
 颜色没有特殊含义，因为火焰图表示的是 CPU 的繁忙程度，所以一般选择暖色调。  
-  
+
+
+#### ftrace、perf和eBPF
+
+reference:  
+https://zhuanlan.zhihu.com/p/113478603
+
+* **ftrace**
+
+ftrace 是一种调试工具，用于了解 Linux 内核中的情况。如需详细了解 ftrace 高级功能，请参阅 ftrace 文档：<kernel tree>/Documentation/trace/ftrace.txt
+
+Ftrace 的设计目标简单，本质上是一种静态代码插装技术，不需要支持某种编程接口让用户自定义 trace 行为。静态代码插装技术更加可靠，不会因为用户的不当使用而导致内核崩溃。 ftrace 代码量很小，稳定可靠。实际上，即使是 Dtrace，大多数用户也只使用其静态 trace 功能。因此 ftrace 的设计非常务实。
+
+它内置在内核中，可以使用跟踪点，kprobes和uprobes，并提供以下功能：事件跟踪，带有可选的过滤器和参数； 事件计数和时间安排，内核摘要； 和功能流漫游。
+
+缺点主要是它不是可编程的（programmable），因此，举个例子说，你不能保存和获取时间戳、计算延迟，以及将其保存为直方图。你需要转储事件到用户级以便于进行后期处理，这需要花费一些成本。它也许可以通过 eBPF 实现可编程。
+
+* **perf**
+
+Perf 是内置于 Linux 内核源码树中的性能剖析（profiling）工具。它基于事件采样原理，以性能事件为基础，支持针对处理器相关性能指标与操作系统相关性能指标的性能剖析，可用于性能瓶颈的查找与热点代码的定位。
+
+ftrace的跟踪方法是一种总体跟踪法，它是统计了一个事件到下一个事件所有的时间长度，然后把它们放到时间轴上，这样就可以知道整个系统运行在时间轴上的分布。这种方法很准确，但跟踪成本很高。所以，我们也需要一种抽样形态的跟踪方法。perf提供的就是这样的跟踪方法。
+
+perf的原理大致是这样的：每隔一个固定的时间，就在CPU上（每个核上都有）产生一个中断，在中断上看看，当前是哪个pid，哪个函数，然后给对应的pid和函数加一个统计值，这样，我们就知道CPU有百分几的时间在某个pid，或者某个函数上了。
+
+perf-event是 Linux 用户的主要跟踪工具，它的源代码位于 Linux 内核中，一般是通过 linux-tools-common 包来添加的。它又称为perf，后者指的是它的前端，它相当高效（动态缓存），一般用于跟踪并转储到一个文件中（perf.data），然后可以在之后进行后期处理。它可以做大部分 ftrace 能做的事情。它不能进行函数流步进，并且不太容易调校（而它的安全/错误检查做的更好一些）。但它可以做剖析（采样）、CPU 性能计数、用户级的栈转换、以及使用本地变量利用调试信息（debuginfo）进行行级跟踪（line tracing）。它也支持多个并发用户。与 ftrace 一样，它也不是内核可编程的，除非 eBPF 支持（补丁已经在计划中）。
+
+* **eBPF**
+
+扩展的伯克利包过滤器（extended Berkeley Packet Filter，eBPF）是一个内核内（in-kernel）的虚拟机，可以在事件上运行程序，它非常高效（JIT）。它可能最终为 ftrace 和 perf_events 提供内核内编程（in-kernel programming），并可以去增强其它跟踪器。
+
+
+
 #### kernelshark分析系统调度情况  
 sudo trace-cmd record -e 'sched_wakeup*' -e sched_switch -e 'sched_migrate*'  
 kernelshark trace.dat  
