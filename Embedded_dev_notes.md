@@ -1633,6 +1633,10 @@ python record_android_trace.py -c config.pbtx -o trace_file.perfetto-trace
 
 ##### simpleperf
 
+references:  
+[【Simpleperf】Android的CPU分析，性能优化利器](https://blog.csdn.net/qq_38410730/article/details/103481429)  
+
+
 Simpleperf 是 Android 的原生 CPU 分析工具。 它可用于分析 Android 应用程序和在 Android 上运行的本机进程。 simpleperf 可执行文件可以在 Android >=L 上运行，而 Python 脚本可以在 Android >= N 上使用。
 
 使用simpleperf采集数据
@@ -1647,11 +1651,167 @@ python report_sample.py simpleperf_mcu.data > simpleperf_mcu_report.data
 
 
 
+
+
+
+
+Simpleperf是NDK软件包中提供的一种多功能命令行工具，方便为Android应用流程执行CPU分析。也就是说，Simpleperf是NDK自带的工具，官方认证的CPU分析工具。Simpleperf是Android平台的一个本地层性能分析工具。它的命令行界面支持与linux-tools perf大致相同的选项，但是它还支持许多Android特有的改进。
+
+Simpleperf的获取路径：[Google Git Simpleperf](https://android.googlesource.com/platform/prebuilts/simpleperf/)
+
+
+###### Simpleperf的工作原理
+
+现代的CPU具有一个硬件组件，称为性能监控单元(PMU)。PMU具有一些硬件计数器，计数一些诸如经历了多少次CPU周期，执行了多少条指令，或发生了多少次缓存未命中等的事件。Linux内核将这些硬件计数器包装到硬件perf事件(hardware perf events)中。此外，Linux内核还提供了独立于硬件的软件事件和跟踪点事件。Linux内核通过perf_event_open系统调用将这些都暴露给了用户空间。这正是simpleperf所使用的机制。
+
+Simpleperf具有三个主要的功能：stat、record和report。
+
+Stat命令给出了在一个时间段内被分析的进程中发生了多少事件的摘要。以下是它的工作原理：
+* 给定用户选项，simpleperf通过对linux内核进行系统调用来启用分析；
+* Linux 内核在调度到被分析进程时启用计数器；
+* 分析之后，simpleperf从内核读取计数器，并报告计数器摘要。
+
+Record命令在一段时间内记录剖析进程的样本。它的工作原理如下：
+* 给定用户选项，simpleperf通过对linux内核进行系统调用来启用分析；
+* Simpleperf在simpleperf和linux内核之间创建映射缓冲区；
+* Linux内核在调度到被分析进程时启用计数器；
+* 每次给定数量的事件发生时，linux内核将样本转储到映射缓冲区；
+* Simpleperf从映射缓冲区读取样本并生成perf.data。
+
+Report命令读取perf.data文件及所有被剖析进程用到的共享库，并输出一份报告，展示时间消耗在了哪里。
+
+###### Simpleperf的使用
+
+```shell
+#==> stat
+simpleperf stat [options] [command [command-args]]
+# 获取一段时间内已分析进程中发生的事件数摘要。 最常使用的选项为：
+simpleperf stat -p <进程号> --duration <检测进程的持续时间(秒)>
+
+#==> record
+simpleperf record [options] [command [command-args]]
+# 记录一段时间内已分析进程的样本，这是simpleperf的主命令。最常使用的选项为：
+simpleperf record -p <进程号> -o <输出文件(默认perf.data)> --duration <监测进程的持续时间(秒)>
+# 需要注意的是，如果出现Access to kernel symbol addresses is restricted的警告，需要使用以下命令来取消
+echo 0>/proc/sys/kernel/kptr_restrict
+
+#==> report methed1
+simpleperf report [options]
+# 读取perf.data文件(由simpleperf record创建)，并显示报告，表明花费时间的地方。最常使用的选项为：
+simpleperf report --dsos <选定动态共享对象(so库)>  -f <记录文件(默认perf.data)> --sort <用于排序和打印报告的键> -n
+
+#==> report  methed2
+# 使用NDK转数据，使用FlameGraph生成图片
+~/work/android/ndk/android-ndk-r23b/simpleperf/report_sample.py ./perf.data > out.perf
+~/Projects/FlameGraph/stackcollapse-perf.pl out.perf > out.foled
+~/Projects/FlameGraph/flamegraph.pl out.foled > out.svg
+```
+
+应用实例：
+```shell
+#==> report  methed1
+# -g 意味着抓取的数据含有堆栈信息，如果不加 -g 最终生成的火焰图效果不好，无法形成堆栈的火焰状态
+simpleperf record -g mpi_dec_test -i /sdcard/benfan.h264
+# 生成命令行的解析，-g 参数会显示调用堆栈，不然会平铺
+python3 ${HOME}/work/android/ndk/android-ndk-r23b/simpleperf/report.py -g -i perf.data
+# 生成html文件
+python3 ${HOME}/work/android/ndk/android-ndk-r23b/simpleperf/report_html.py -i perf.data
+
+
+#==> report  methed2
+# 使用NDK转数据，使用FlameGraph生成图片
+~/work/android/ndk/android-ndk-r23b/simpleperf/report_sample.py ./perf.data > out.perf
+~/Projects/FlameGraph/stackcollapse-perf.pl out.perf > out.foled
+~/Projects/FlameGraph/flamegraph.pl out.foled > out.svg
+```
+
+tips:
+如果想html的火焰图都放在一张图上，需要修改ndk里的源码
+```
+# ndk/android-ndk-r23b/simpleperf/inferno/inferno.py
+
+    args = parser.parse_args()
+    # 新加这行代码
+    args.one_flamegraph = True
+    process = Process("", 0)
+
+    if not args.skip_collection:
+        if args.pid != -1:
+            process.pid = args.pid
+
+# 然后执行：
+~/work/android/ndk/android-ndk-r23b/simpleperf/inferno.sh -sc --record_file ./perf.data
+# 可以将火焰图放在一张图上
+
+# 使用 FlameGraph 是直接放在一张图上的
+```
+
+
+**注意**:
+如果使用report命令进行查找的时候，发现so现实的Symbol都是地址，而不是函数内容。这多数是因为在安卓编译的时候，设备上使用的so库已经被strip过，也就是说，已经抛离了.symbol段的内容。那么，我们需要将带有Symbol信息的so下载到设备上。同时需要将so放置到perf.data中记录的相同的路径(否则，simpleperf无法找到它)。如果找不到路径，可以在perf.data文件中直接搜索需要选定的so库的名称，即可查看到路径。
+
+#### perf （Linux性能分析工具）  
+references:  
+
+[linux 性能分析工具perf使用详解](https://blog.csdn.net/cyq6239075/article/details/104371328)  
+[perf的基本使用方法](https://blog.csdn.net/jasonactions/article/details/109332167)  
+
+Perf包含22种子工具的工具集，以下是最常用的5种：
+* Perf-list：用来查看perf所支持的性能事件，有软件的也有硬件的。
+* perf-stat：用于分析指定程序的性能概况。
+* perf-top：对于一个指定的性能事件(默认是CPU周期)，显示消耗最多的函数或指令。
+* perf-record：收集采样信息，并将其记录在数据文件中。随后可以通过其它工具(perf-report)对数据文件进行分析，结果类似于perf-top的。
+* perf-report：读取perf record创建的数据文件，并给出热点分析结果。
+
+**perf list**
+
+列出所有能够触发 perf 采样点的事件,主要区分为如下三类事件：
+* Hardware Event 是由 PMU 硬件产生的事件，比如 cache 命中
+* Software Event 是内核软件产生的事件，比如进程切换，tick 数等
+* Tracepoint event 是内核中的静态 tracepoint 所触发的事件
+
+**perf stat**
+
+```shell
+# 通过概括精简的方式提供被调试程序运行的整体情况和汇总数据
+sudo perf stat ./test
+
+# Task-clock-msecs：CPU 利用率，该值高，说明程序的多数时间花费在 CPU 计算上而非 IO。
+# Context-switches：进程切换次数，记录了程序运行过程中发生了多少次进程切换，频繁的进程切换是应该避免的。
+# Cache-misses：程序运行过程中总体的 cache 利用情况，如果该值过高，说明程序的 cache 利用不好
+# CPU-migrations：表示进程 t1 运行过程中发生了多少次 CPU 迁移，即被调度器从一个 CPU 转移到另外一个 CPU 上运行。
+# Cycles：处理器时钟，一条机器指令可能需要多个 cycles，
+# Instructions: 机器指令数目。
+# IPC：是 Instructions/Cycles 的比值，该值越大越好，说明程序充分利用了处理器的特性。
+# Cache-references: cache 命中的次数
+# Cache-misses: cache 失效的次数。
+# 注：通过指定 -e 选项，您可以改变 perf stat 的缺省事件
+```
+
+**perf top**
+
+用于实时显示当前系统的性能统计信息。该命令主要用来观察整个系统当前的状态，比如可以通过查看该命令的输出来查看当前系统最耗时的内核函数或某个用户进程
+
+**perf record/perf report**
+
+perf record 记录单个函数级别的统计信息，并使用 perf report 来显示统计结果
+
+使用-g选项可以包含堆栈信息，以便查看到具体某个函数所花费的时间以及函数的调用路径：
+```shell
+# sudo perf record -e cpu-clock ./test
+sudo perf record -g ./test
+# 展示数据，该方法与火焰图都是展示采集到的数据，但是没有火焰图直观
+sudo perf report
+```
+
+
 #### 火焰图  
-https://zhuanlan.zhihu.com/p/54276509  
-https://blog.csdn.net/u013919153/article/details/110559888  
-https://blog.csdn.net/tugouxp/article/details/120165100  
-  
+[Linux Perf 性能分析工具及火焰图浅析](https://zhuanlan.zhihu.com/p/54276509)  
+[Linux 之 perf性能分析(火焰图)](https://blog.csdn.net/u013919153/article/details/110559888)  
+[Linux Perf性能分析常用手段(火焰图,gprof,kernelshark,bts)](https://blog.csdn.net/tugouxp/article/details/120165100)  
+
+使用 `perf record` 采集到的数据生成火焰图，`perf report` 也是一种报告展示方式，但是没有火焰图直观
+
 **第一步：使用perf采样**  
 **方法一**：直接使用perf启动服务  
 ```shell  
@@ -1660,7 +1820,7 @@ https://blog.csdn.net/tugouxp/article/details/120165100
 --------------------------------  
 **方法二**：挂接到已启动的进程  
 ```shell  
-# 使用PID监控程序  
+#==> 使用PID监控程序  
 $ sudo perf record -e cpu-clock -g -p pid  
 # perf record 表示采集系统事件  
 # 没有使用 -e 指定采集事件, 则默认采集 cycles(即 CPU clock 周期)  
@@ -1673,9 +1833,14 @@ $ sudo perf record -e cpu-clock -g -p pid
 # 如果svg图出现unknown函数，使用如下  
 $ sudo perf record -e cpu-clock --call-graph dwarf -p pid  
   
-# 使用程序名监控程序  
+#==> 使用程序名监控程序  
 $ sudo perf record -e cpu-clock -g -p `pgrep your_program`  
+
+#==> 直接执行被监控程序
+$ sudo perf record -g <app>
+
 ------------------------------------  
+
 使用ctrl+c中断perf进程，或者在命令最后加上参数 -- sleep n (n秒后停止-- 和sleep中间有空格)  
 perf record表示记录到文件，perf top直接会显示到界面  
 如果record之后想直接输出结果，使用perf report即可:  
@@ -1688,12 +1853,16 @@ sudo perf report -n --stdio      // 树状图
 ```shell  
 从github下载分析脚本  
 git clone https://github.com/brendangregg/FlameGraph.git  
+
 用 perf script 工具对 perf.data 进行解析,生成折叠后的调用栈  
 sudo perf script -i perf.data &> perf.unfold  
+
 用 stackcollapse-perf.pl 将 perf 解析出的内容 perf.unfold 中的符号进行折叠  
 ./FlameGraph/stackcollapse-perf.pl perf.unfold &> perf.folded  
+
 生成 svg 图  
 ./FlameGraph/flamegraph.pl perf.folded > perf.svg  
+
 可以利用shell 管道将上面三条命令合为一条  
 perf script | FlameGraph/stackcollapse-perf.pl | FlameGraph/flamegraph.pl > process.svg  
 ```  
@@ -1813,26 +1982,6 @@ ssh -N -f -R <remoteIP>:<remotePort>:<locIP>:<locPort> <remoteUserName>@<remoteI
 其中：  
 <remoteIP>: 可以缺省不写，因为无论写不写都只能监听 remote 主机的 127.0.0.1 即：remote 主机不能被当作跳板，即便开启 -g 也不行  
 ```  
-  
-#### perf （Linux性能分析工具）  
-https://blog.csdn.net/cyq6239075/article/details/104371328  
-Perf包含22种子工具的工具集，以下是最常用的5种：  
-Perf-list：用来查看perf所支持的性能事件，有软件的也有硬件的。  
-perf-stat：用于分析指定程序的性能概况。  
-perf-top：对于一个指定的性能事件(默认是CPU周期)，显示消耗最多的函数或指令。  
-perf-record：收集采样信息，并将其记录在数据文件中。随后可以通过其它工具(perf-report)对数据文件进行分析，结果类似于perf-top的。  
-perf-report：读取perf record创建的数据文件，并给出热点分析结果。  
-  
-Tips:  
-任务调度追踪  
-sudo perf record -e context-switches -ag  
-sudo perf report -n --stdio -f  
-  
-生成timechart  
-sudo perf sched record -a  
-sudo perf timechart  
-  
-  
   
 #### iperf3  
 ```shell  
