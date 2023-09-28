@@ -1263,6 +1263,89 @@ LD_DEBUG1.LD_DEBUG使用方法如下:
 LD_DEBUG=libs ./app  
 LD_DEBUG=libs help 查看命令使用方法  
 
+
+#### 文件比较工具
+
+#####  diff
+
+**介绍**
+
+diff 是一个文件比较工具，可以逐行比较两个文件的不同，它是以行为单位的，其中它有
+三种输出方式，分别是 normal， context 以及 unified。区别如下：
+* normal 方式为默认输出方式，不需要加任何参数
+* context 相较于 normal 模式的简单输出，contetx 模式会输出修改过部分的上下文，
+默认是前后 3 行。使用参数 -c
+* unified 合并上下文模式则为新的上下文输出模式，同样为前后 3 行，只不过把上下文
+合并了显示了。使用参数 -u
+
+注：这里主要介绍 unified 模式
+
+其他常用参数：
+* -r 递归处理目录
+* -N 将缺失的文件当作空白文件处理
+
+***diff 语法与文件格式***
+
+```shell
+diff [options] old new
+
+ex: diff -Nru <oldFile> <newFile> > tmp.patch
+```
+
+##### cmp
+
+相对于diff，cmp的用途没有那么广泛，其主要是以字节为单位去比较，而diff是以行为
+单位比较，因此cmp也可以比较二进制文件
+
+##### patch
+
+**介绍**
+
+patch 是一个可以将 diff 生成的补丁应用到源文件，生成一个打过补丁版本的文件。语法：
+
+```shell
+patch [oiption] [originalfile [patchfile]]
+```
+
+常用参数：
+
+* -i 指定补丁文件
+* `-p<剥离层级>`或`--strip=<剥离层级>` 　设置欲剥离几层路径名称。在 diff 生成的
+补丁中，第三四行是文件信息，其中文件名是可以包含路径的，例如：
+```
+Binary files LearnV4l2/.git/index and LearnV4l2_2/.git/index differ
+diff --color -Nru LearnV4l2/v4l2Cap.c LearnV4l2_2/v4l2Cap.c
+--- LearnV4l2/v4l2Cap.c	2023-06-09 20:49:57.915992397 +0800
++++ LearnV4l2_2/v4l2Cap.c	2023-09-29 09:58:17.235950333 +0800
+```
+-p0 代表完整的路径`LearnV4l2/v4l2Cap.c`，而 -p1 则指`v4l2Cap.c`，-pN 依此类推，
+可以简单理解为，-pN 里的N表示去掉补丁路径里的几个 `/`。
+* -E 删除应用补丁后为空文件的文件
+* -o 输出到一个文件而不是直接覆盖文件
+* -R 代表还原，将新的文件还原成原来的旧版本，也可以理解为去掉补丁
+
+常见用法：
+```shell
+patch -p0 < tmp.patch
+patch -R -p0 < tmp.patch
+```
+
+
+
+
+#### man 替代工具
+
+```shell
+tldr <cmd>
+curl cheat.sh/<cmd>
+
+ex:
+tldr ls
+curl cheat.sh/ls
+```
+
+
+
 ### Linux系统性能分析
 
 #### top 使用技巧  
