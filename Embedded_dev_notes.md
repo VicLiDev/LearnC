@@ -3,7 +3,7 @@
 **ARM内核**  
 **ARM内核**： 包括了寄存器组、指令集、总线、存储器映射规则、中断逻辑和调试组件等。 内核是由ARM公司设计并以销售方式授权给个芯片厂商使用的（ARM公司本身不做芯片）。 比如为高速度设计的Cortex A8、A9都是ARMv7a 架构;Cortex M3、M4是ARMv7m架构;**前者是处理器（就是内核），后者是指令集的架构（也简称架构）。**  
 **外设部分** 包括计时器、A/D转换器、存储器、i2c、UART、SPI、ROM...等等，则完全由各芯片厂商自己设计并与ARM内核衔接配套。不同的芯片厂商就有不同的外设，因此构成了数量和规格庞大的ARM芯片产业。  
-  
+
 **ARM指令集架构**  
 指令集的设计是处理器结构中最重要的一个部分，用ARM的术语称之为ISA（Instruction Set Architecture）。  
 指令集可以说是cpu设计的灵魂，是打开CPU这个潘多拉魔盒的咒语，要想使用cpu，我们只能通过这些指令来操作cpu。  
@@ -11,9 +11,9 @@
 当我们用手机玩着王者荣耀的时候，要知道我们的每发的一招，其实最终都是被翻译成了一系列机器指令。  
 从1985年ARMv1架构诞生起，到2011年，ARM架构已经发展到了第八代ARMv8。  
 Cortex-A32/35/53/57/72/73/77/78采用的都是ARMv8架构，这是ARM公司的首款支持64位指令集的处理器架构。  
-  
+
 ![](./Embedded_dev_notes.pic/Picture1.png)  
-  
+
 **ARM11之前的处理器和指令集架构**  
 ARM11芯片之前，每一个芯片对应的架构关系如下：  
 ![](./Embedded_dev_notes.pic/Picture2.png)  
@@ -21,7 +21,7 @@ ARM11芯片之前，每一个芯片对应的架构关系如下：
 ARM11芯片之后，也就是从ARMv7架构开始，ARM的命名方式有所改变。  
 新的处理器家族，改以Cortex命名，并分为三个系列，分别是Cortex-A，Cortex-R，Cortex-M。很巧合，又是这三个字母**A、R、M**。  
 ![](./Embedded_dev_notes.pic/Picture3.png)  
-  
+
 **Cortex-A系列（A：Application）**  
     针对日益增长的消费娱乐和无线产品设计，用于具有高计算要求、运行丰富操作系统及提供交互媒体和图形体验的应用领域，如智能手机、平板电脑、汽车娱乐系统、数字电视，智能本、电子阅读器、家用网络、家用网关和其他各种产品。  
 **Cortex-R系列 （R：Real-time）**  
@@ -31,20 +31,15 @@ ARM11芯片之后，也就是从ARMv7架构开始，ARM的命名方式有所改�
 **Cortex-SC系列（SC：SecurCore）**  
     其实，除了上述三大系列之外，还有一个主打安全的Cortex-SC系列（SC：SecurCore），主要用于政府安全芯片。  
 ![](./Embedded_dev_notes.pic/Picture4.png)  
-  
+
 ARM11系列包括了ARM11MPCore处理器、ARM1176处理器、ARM1156处理器、ARM1136处理器，它们是基于ARMv6架构。  
 ARM Cortex-A5处理器、Cortex-A7处理器、Cortex-A8处理器、Cortex-A9处理器、Cortex-A15处理器隶属于Cortex-A系列，基于ARMv7-A架构。  
 Cortex-A53、Cortex-A57两款处理器属于Cortex-A50系列，首次采用64位ARMv8架构。  
 2020年ARM最近发布了一款全新的CPU架构Cortex-A78，是基于ARMv8.2指令集。  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
 # 第二章 嵌入式开发基础  
 ## C语言常用技巧  
 ### uml 关系
@@ -101,7 +96,7 @@ do {
 } while(0);  
 ```  
 这样每次divider（除数）为0的时候便会在标准错误流上输出一个提示信息。  
-  
+
 而##被称为连接符（concatenator），用来将两个Token连接为一个Token。注意这里连接的对象是Token就行，而不一定是宏的变量。比如你要做一个菜单项命令名和函数指针组成的结构体的数组，并且希望在函数名和菜单项命令名之间有直观的、名字上的关系。那么下面的代码就非常实用：  
 ```c  
 struct command  
@@ -125,7 +120,7 @@ typedef  struct  _record_type  LINK_MULTIPLE(name,company,position,salary);
 // 这里这个语句将展开为：  
 // typedef  struct  _record_type  name_company_position_salary;  
 ```  
-  
+
 ### 变参列表  
 可变参数列表是通过宏来实现的，这些宏定义于 stdarg.h 头文件，他是标准库的一部分。这个头文件声明了一个类型 vs_list 和三个宏： va_start 、 va_arg 和 va_end 。我们可以声明一个类型为 va_list 的变量，与这几个宏配合使用，访问参数的值。  
 ```c  
@@ -133,26 +128,26 @@ typedef  struct  _record_type  LINK_MULTIPLE(name,company,position,salary);
  * 计算指定数量的数据的平均值  
  */  
 #include <stdarg.h>  
-  
+
 float average(int n_values, ...) {  
 	va_list var_arg;  
 	int sum;  
 	int count;  
-  
+
 	// 准备访问可变参数  
 	va_start(var_arg, n_values);  
-  
+
 	// 添加取自可变参数列表的值  
 	for(count = 0; count < n_values; count++) {  
 		sum += va_arg(var_arg, int);  
 	}  
-  
+
 	// 完成处理可变参数  
 	va_end(var_arg);  
-  
+
 	return sum / n_values;  
 }  
-  
+
 int main(int argc, char *argv)  
 {  
 	printf("average is: %d \n", average(1, 2, 3));  
@@ -168,30 +163,30 @@ int main(int argc, char *argv)
 |param1 (n_values)|  
 |var_arg|  
 |栈顶|  
-  
+
 为了访问参数，需要使用 va_arg，这个宏接受两个参数： va_list 变量和参数列表当前参数的类型。在有些函数中可能要通过前面获得的数据来判断当前参数的类型（例如，printf检查格式字符串中的字符来判断他需要打印的参数类型），va_arg 返回这个参数的值，并使 var_arg 指向下一个可变参数。  
 最后，当访问完毕最后一个可变参数之后，需要调用va_end。  
-  
+
 ### 变参宏  
 **`标识符 __VA_ARGS__`**  
 `__VA_ARGS__` 是在 C99 中增加的新特性。虽然 C89 引入了一种标准机制，允许定义具有可变数量参数的函数，但是 C89 中不允许这种定义可变数量参数的方式出现在宏定义中。C99 中加入了 `__VA_ARGS__` 关键字，用于支持在宏定义中定义可变数量参数，用于接收 ... 传递的多个参数。  
 `__VA_ARGS__` 只能出现在使用了省略号的像函数一样的宏定义里。例如 #define myprintf(...) fprintf(stderr, `__VA_ARGS__`)。  
-  
+
 **带 ‘#’ 的标识符 `#__VA_ARGS__`**  
 预处理标记 ‘#’ 用于将宏定义参数转化为字符串，因此 #__VA_ARGS__ 会被展开为参数列表对应的字符串。  
 示例：  
 ```c  
 #define showlist(...) put(#__VA_ARGS__)  
-  
+
 // 测试如下：  
 showlist(The first, second, and third items.);  
 showlist(arg1, arg2, arg3);  
-  
+
 // 输出结果分别为：  
 // The first, second, and third items.  
 // arg1, arg2, arg3  
 ```  
-  
+
 **带 ‘##’ 的标识符 `##__VA_ARGS__`**  
 `##__VA_ARGS__` 是 GNU 特性，不是 C99 标准的一部分，C 标准不建议这样使用，但目前已经被大部分编译器支持。  
 标识符 `##__VA_ARGS__` 的意义来自 ‘##’，主要为了解决一下应用场景：  
@@ -199,12 +194,12 @@ showlist(arg1, arg2, arg3);
 #define myprintf_a(fmt, ...) printf(fmt, __VA_ARGS__)  
 #define myprintf_b(fmt, ...) printf(fmt, ##__VA_ARGS__)  
 ```  
-  
+
 应用：  
 ```c  
 myprintf_a("hello");  
 myprintf_b("hello");  
-  
+
 myprintf_a("hello: %s", "world");  
 myprintf_b("hello: %s", "world");  
 ```  
@@ -219,7 +214,7 @@ applications\main.c:36:5: note: in expansion of macro 'myprintf_a'
 ```  
 为什么呢？  
 我们展开 myprintf_a("hello"); 之后为 printf("hello",)。因为没有不定参，所以，`__VA_ARGS__` 展开为空白字符，这个时候，printf 函数中就多了一个 ‘,’（逗号），导致编译报错。而 `##__VA_ARGS__` 在展开的时候，因为 ‘##’ 找不到连接对象，会将 ‘##’ 之前的空白字符和 ‘,’（逗号）删除，这个时候 printf 函数就没有了多余的 ‘,’（逗号）。  
-  
+
 ### main函数入参  
 ```c  
 // main函数入参有两种写法：  
@@ -228,7 +223,7 @@ int main (int argc, char *argv[])
 // 另一种写法：  
 int main (int argc, char **argv)  
 ```  
-  
+
 ### C 语言中的constructor与destructor  
 可以给一个函数赋予constructor或destructor，其中constructor在main开始运行之前被调用，destructor在main函数结束后被调用。如果有多个constructor或destructor，可以给每个constructor或destructor赋予优先级，对于constructor，优先级数值越小，运行越早。destructor则相反。  
 例如：  
@@ -255,7 +250,7 @@ int main()
 }  
 ```  
 其中constructor后边括号中为优先级，也可以不指定优先级。  
-  
+
 ### `__FUNCTION__` `__func__`等  
 ```c  
 __FUNCTION__： 当前函数名  
@@ -283,16 +278,16 @@ __SIZEOF_PTRDIFF_T__
 __GNUC__ 、__GNUC_MINOR__ 、__GNUC_PATCHLEVEL__分别代表gcc的主版本号，次版本号，修正版本号
 ```  
 更多宏定义可以参考：[3.7.2 Common Predefined Macros](https://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html)  
-  
+
 ### do{}while(0)  
 为了保证宏定义的使用者能无编译错误地使用宏，可以考虑使用 do{}while(0)的形式。  
-  
+
 ### 数组和指针  
 （1）编译器为每个变量分配一个地址（左值）。这个地址在编译时可知，而且该变量在运行时一直保存于这个地址。相反，存储与变量中的值（他的右值）只有在运行时才可知。所以定义一个数组，例如：int num[5]; 。这时候num跟一个地址绑定在一起，如果编译器需要一个地址（可能还要加上偏移量）来执行某种操作，他就可以直接进行操作，不需要增加指令首先取得具体的地址。相反，对于指针，必须首先在运行时取得他的当前值，然后才能对他进行解除引用操作。  
 （2）在表达式中，指针和数组是可以互换的，因为他们在编译器里的最终形式都是指针，并且都可以进行取下标操作。  
 （3）C语言把数组下标作为指针的偏移量。  
 （4）在函数参数的声明中，数组名被编译器当作指向该数组第一个元素的指针。编译器只向函数传递数组的地址，而不是整个数组的拷贝。  
-  
+
 ### 数组指针和指针数组  
 ```c  
 int *p1[5]； // 指针数组  
@@ -300,12 +295,12 @@ int (*p2)[5]； // 数组指针
 ```  
 首先，对于语句`int*p1[5]`，因为“[]”的优先级要比`*`要高，所以 p1 先与“[]”结合，构成一个数组的定义，数组名为 p1，而“int*”修饰的是数组的内容，即数组的每个元素。也就是说，该数组包含 5 个指向 int 类型数据的指针  
 ![](./Embedded_dev_notes.pic/Picture27.jpg)  
-  
+
 其次，对于语句`int(*p2)[5]`，“()”的优先级比“[]”高，`*`号和 p2 构成一个指针的定义，指针变量名为 p2，而 int 修饰的是数组的内容，即数组的每个元素。也就是说，p2 是一个指针，它指向一个包含 5 个 int 类型数据的数组。很显然，它是一个数组指针，数组在这里并没有名字，是个匿名数组。  
 ![](./Embedded_dev_notes.pic/Picture28.jpg)  
-  
+
 由此可见，对指针数组来说，首先它是一个数组，数组的元素都是指针，也就是说该数组存储的是指针，数组占多少个字节由数组本身决定；而对数组指针来说，首先它是一个指针，它指向一个数组，也就是说它是指向数组的指针，在 32 位系统下永远占 4 字节，至于它指向的数组占多少字节，这个不能够确定，要看具体情况。  
-  
+
 分析一个bug：  
 ```c  
 int arr[5]={1，2，3，4，5};  
@@ -314,10 +309,10 @@ int (*p1)[5] = &arr;
 int (*p2)[5] = arr;  
 ```  
 不难看出，在上面的示例代码中，&arr 是指整个数组的首地址，而 arr 是指数组首元素的首地址，虽然所表示的意义不同，但二者之间的值却是相同的。那么问题出来了，既然值是相同的，为什么语句`int(*p1)[5]=&arr`是正确的，而语句`int(*p2)[5]=arr`却在有些编译器下运行时会提示错误信息呢（如在 Microsoft Visual Studio 2010 中提示的错误信息为“a value of type"int*"cannot be used to initialize an entity of type"int(*)[5]"”）？  
-  
+
 其实原因很简单，在 C 语言中，赋值符号“=”号两边的数据类型必须是相同的，如果不同，则需要显示或隐式类型转换。在这里，p1 和 p2 都是数组指针，指向的是整个数组。p1 这个定义的“=”号两边的数据类型完全一致，而 p2 这个定义的“=”号两边的数据类型就不一致了（左边的类型是指向整个数组的指针，而右边的数据类型是指向单个字符的指针），因此会提示错误信息。  
-  
-  
+
+
 ### const  
 ```c  
 int *pi;    普通指针  
@@ -330,7 +325,7 @@ int const * const cpci;  指针的值和指针指向的值均不能修改，指�
 void fcn(const int i){…}  
 void fcn(int i){…}  
 ```  
-  
+
 ### 友元  
 友元函和友元类统称为友元（friend）。
 
@@ -355,13 +350,13 @@ void fcn(int i){…}
 
 另外，使用一般不建议把整个类声明为友元类，而只将某些成员函数声明为友元函数，这样更安全些。  
 另外，类还可以把其他的类定义为友元，也可以把其他类（之前已经定义过的）的成员函数定义为友元。此外，友元函数能定义在类的内部，这样的函数是隐式的。  
-  
+
 ### 单引号和双引号  
 用单引号括起的一个字符代表一个整数，整数值对应于该字符在编译器采用的字符集中的序列值。因此，对于采用ASCII字符集的编译器而言，‘a’的含义与0141（八进制）或者97（十进制）严格一致。  
 用双引号括起的一个字符代表一个指向无名数组起始字符的指针，该数组被双引号之间的字符以及一个额外的二进制值为零的字符‘\0’初始化。  
 因此如下的语句时错误的，因为单引号括起来的是一个整数，而不是char指针：  
 char *slash = ‘/’;  
-  
+
 ### 使用 0(NULL)  
 ANSIC标准允许值为0的常量被强制转换成任何一种类型的指针，并且转换的结果是个NULL，因此((type *)0)的结果就是一个类型为type *的NULL指针。  
 如果利用这个NULL指针来访问type的成员当然是非法的，但typeof( ((type *)0)->member )是想取该成员的类型，所有编译器不会生成访问type成员的代码，类似的代码&( ((type *)0)->member )在最前面有个取地址符&，它的意图是想取member的地址，所以编译器同样会优化为直接取地址。  
@@ -372,7 +367,7 @@ ANSIC标准允许值为0的常量被强制转换成任何一种类型的指针�
 ```  
 ![](./Embedded_dev_notes.pic/Picture5.png)  
 ![](./Embedded_dev_notes.pic/Picture6.png)  
-  
+
 ### 判断大端小端  
 大端：数据高位在低地址，低位在高地址  
 小端：数据地位在低地址，高位在高地址  
@@ -383,7 +378,7 @@ Linux和mac默认栈从低地址向高地址增长
 int main() {  
     int i = 0x11223344;  
     char *p;  
-  
+
     p = (char *) &i;  
     if (*p == 0x44) {  
         printf("Little endian\n");  
@@ -394,20 +389,20 @@ int main() {
     return 0;  
 }  
 ```  
-  
+
 ### `__attribute__((packed))` 和 `__attribute__((aligned(4)))`  
 packed 在用在结构体里时，指的是所有元素紧密排列，不进行填充  
 aligned(4) 在用在结构体里时，指的是结构体存放的起始地址是4字节对齐的，自然结构体也占4字节对齐的内存空间  
-  
+
 ## C/C++程序编译过程  
 整个代码的编译过程分为编译和链接两个过程，编译对应图中的大括号括起的部分，其余则为链接过程。  
 ![](./Embedded_dev_notes.pic/Picture7.png)  
 ### 编译过程  
 编译过程又可以分成两个阶段：编译和汇编。  
-  
+
 #### 编译  
 编译是读取源程序（字符流），对之进行词法和语法的分析，将高级语言指令转换为功能等效的汇编代码，源文件的编译过程包含两个主要阶段：  
-  
+
 **编译预处理**  
 读取c源程序，对其中的伪指令（以# 开头的指令）和特殊符号进行处理。  
 伪指令主要包括以下四个方面：  
@@ -422,18 +417,18 @@ aligned(4) 在用在结构体里时，指的是结构体存放的起始地址是
 4) 特殊符号，预编译程序可以识别一些特殊的符号。  
 例如在源程序中出现的__LINE__标识将被解释为当前行号（十进制数），__FILE__则被解释为当前被编译的C源程序的名称。预编译程序对于在源程序中出现的这些串将用合适的值进行替换。  
 预编译程序所完成的基本上是对源程序的“替代”工作。经过此种替代，生成一个没有宏定义、没有条件编译指令、没有特殊符号的输出文件。这个文件的含义同没有经过预处理的源文件是相同的，但内容有所不同。下一步，此输出文件将作为编译程序的输入而被翻译成为机器指令。  
-  
+
 **编译、优化阶段**  
 经过预编译得到的输出文件中，只有常量；如数字、字符串、变量的定义，以及C语言的关键字，如main, if , else , for , while , { , } , + , - , * , \ 等等。  
 *编译程序*所要作得工作就是通过词法分析和语法分析，在确认所有的指令都符合语法规则之后，将其翻译成等价的中间代码表示或汇编代码。  
 *优化处理*是编译系统中一项比较艰深的技术。它涉及到的问题不仅同编译技术本身有关，而且同机器的硬件环境也有很大的关系。优化一部分是对中间代码的优化。这种优化不依赖于具体的计算机。另一种优化则主要针对目标代码的生成而进行的。  
-  
+
 对于前一种优化，主要的工作是删除公共表达式、循环优化（代码外提、强度削弱、变换循环控制条件、已知量的合并等）、复写传播，以及无用赋值的删除，等等。  
-  
+
 后一种类型的优化同机器的硬件结构密切相关，最主要的是考虑是如何充分利用机器的各个硬件寄存器存放有关变量的值，以减少对于内存的访问次数。另外，如何根据机器硬件执行指令的特点（如流水线、RISC、CISC、VLIW等）而对指令进行一些调整使目标代码比较短，执行的效率比较高，也是一个重要的研究课题。  
-  
+
 经过优化得到的汇编代码必须经过汇编程序的汇编转换成相应的机器指令，方可能被机器执行。  
-  
+
 #### 汇编  
 汇编过程实际上指把汇编语言代码翻译成目标机器指令的过程。对于被翻译系统处理的每一个C语言源程序，都将最终经过这一处理而得到相应的目标文件。目标文件中所存放的也就是与源程序等效的目标的机器语言代码。  
 目标文件由段组成。通常一个目标文件中至少有两个段：  
@@ -449,7 +444,7 @@ UNIX环境下主要有三种类型的目标文件：
 3) 可执行文件  
 它包含了一个可以被操作系统创建一个进程来执行之的文件。  
 汇编程序生成的实际上是第一种类型的目标文件。对于后两种还需要其他的一些处理方能得到，这个就是链接程序的工作了。  
-  
+
 ### 链接过程  
 由汇编程序生成的目标文件并不能立即就被执行，其中可能还有许多没有解决的问题。  
 例如，某个源文件中的函数可能引用了另一个源文件中定义的某个符号（如变量或者函数调用等）；在程序中可能调用了某个库文件中的函数，等等。所有的这些问题，都需要经链接程序的处理方能得以解决。  
@@ -460,7 +455,7 @@ UNIX环境下主要有三种类型的目标文件：
 2) 动态链接  
 在此种方式下，函数的代码被放到称作是动态链接库或共享对象的某个目标文件中。链接程序此时所作的只是在最终的可执行程序中记录下共享对象的名字以及其它少量的登记信息。在此可执行文件被执行时，动态链接库的全部内容将被映射到运行时相应进程的虚地址空间。动态链接程序将根据可执行程序中记录的信息找到相应的函数代码。  
 对于可执行文件中的函数调用，可分别采用动态链接或静态链接的方法。使用动态链接能够使最终的可执行文件比较短小，并且当共享对象被多个进程使用时能节约一些内存，因为在内存中只需要保存一份此共享对象的代码。但并不是使用动态链接就一定比使用静态链接要优越。在某些情况下动态链接可能带来一些性能上损害。  
-  
+
 ### GCC的编译链接  
 我们在linux使用的gcc编译器便是把以上的几个过程进行捆绑，使用户只使用一次命令就把编译工作完成，这的确方便了编译工作，但对于初学者了解编译过程就很不利了，下图便是gcc代理的编译过程：  
 ![](./Embedded_dev_notes.pic/Picture8.png)  
@@ -482,51 +477,51 @@ UNIX环境下主要有三种类型的目标文件：
    使用的gcc 命令是： gcc  
    对应于链接命令是 ld  
 总结起来编译过程就上面的四个过程：预编译处理(.c) －－> 编译、优化程序（.s、.asm）－－> 汇编程序(.obj、.o、.a、.ko) －－> 链接程序（.exe、.elf、.axf等）。  
-  
+
 参考博客：[C/C++程序编译过程详解 ](https://www.cnblogs.com/mickole/articles/3659112.html)  
 在博客后半部分有对C++的编译说明，与C大致类似，但有差异  
-  
+
 ## ELF文件  
 ### 原理介绍  
-  
+
 ELF文件参考资料：  
 [ELF文件格式解析](https://blog.csdn.net/feglass/article/details/51469511)  
 [ELF文件格式, ELF文件是什么，里面包含什么内容](https://blog.csdn.net/liugaigai427/article/details/86742062)  
 [Linux[ELF]: ELF文件结构简单梳理](https://www.jianshu.com/p/dd5aec5826da)  
 [ELF格式文件（非常详细）](https://blog.csdn.net/weixin_44316996/article/details/107396385?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-1.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-1.control)  
-  
+
 ELF文件(B站视频  推荐 已下载在当前目录下：elf文件及符号表解析)：  
 [ELF文件装载和符号表解析](https://www.bilibili.com/video/BV1e54y1d74j?from=search&seid=157787288945585334)  
 该up主有好多相关视频，可以关注：  
 [南京大学-计算机系统基础-PA](https://space.bilibili.com/284613991/channel/detail?cid=103368)  
-  
+
 ![](./Embedded_dev_notes.pic/Picture9.png)  
 ![](./Embedded_dev_notes.pic/Picture10.png)  
-  
+
 **可重定位文件（Relocatable File）** 包含适合于与其他目标文件链接来创建可执行文件或者共享目标文件的代码和数据。  
 **可执行文件（Executable File）** 包含适合于执行的一个程序，此文件规定了 exec() 如何创建一个程序的进程映像。  
 **共享目标文件（Shared Object File）** 包含可在两种上下文中链接的代码和数据。首先链接编辑器可以将它和其它可重定位文件和共享目标文件一起处理，生成另外一个目标文件。其次，动态链接器（Dynamic Linker）可能将它与某个可执行文件以及其它共享目标一起组合，创建进程映像。  
-  
+
 文件开始处是一个**ELF 头部（ELF Header）**，用来描述整个文件的组织。节区部分包含链接视图的大量信息：指令、数据、符号表、重定位信息等等。  
 **程序头部表（Program Header Table）**，如果存在的话，告诉系统如何创建进程映像。用来构造进程映像的目标文件必须具有程序头部表，可重定位文件不需要这个表。  
 **节区头部表（Section Heade Table）**包含了描述文件节区的信息，每个节区在表中都有一项，每一项给出诸如节区名称、节区大小这类信息。用于链接的目标文件必须包含节区头部表，其他目标文件可以有，也可以没有这个表。  
-  
+
 注意：尽管图中显示的各个组成部分是有顺序的，实际上除了 ELF 头部表以外，其他节区和段都没有规定的顺序。  
-  
+
 **readelf -h < elf文件>可以查询elf头信息：**  
 ![](./Embedded_dev_notes.pic/Picture11.png)  
 网上的一张图，有别的相关注释，留作记录：  
 ![](./Embedded_dev_notes.pic/Picture12.png)  
-  
+
 **readelf -l < elf文件>可以查询elf程序头表信息：**  
 ![](./Embedded_dev_notes.pic/Picture13.png)  
 MemSiz可能比FileSiz大，这一般是由于存在定义未初始化的全局变量(.bss)引入的，这样的话多出来的空前全都需要初始化为0。  
 ![](./Embedded_dev_notes.pic/Picture14.png)  
-  
-  
+
+
 **readelf -S < elf文件>可以查询elf程序头表信息：**  
 ![](./Embedded_dev_notes.pic/Picture15.png)  
-  
+
 ### 相关工具  
 #### readelf  
 readelf命令用来显示一个或者多个elf格式的目标文件的信息，可以通过它的选项来控制显示哪些信息。  
@@ -553,7 +548,7 @@ readelf < option(s)> elf-file(s)
 -v --version 显示readelf的版本信息。   
 -H --help 显示readelf所支持的命令行选项。   
 -W --wide 宽行输出。  
-  
+
 #### nm  
 nm命令是linux下自带的特定文件分析工具，一般用来检查分析二进制文件、库文件、可执行文件中的符号表，返回二进制文件中各段的信息。  
 [linux下强大的文件分析工具 -- nm](https://zhuanlan.zhihu.com/p/363014233)  
@@ -573,12 +568,12 @@ nm命令是linux下自带的特定文件分析工具，一般用来检查分析�
 -V或--version：国际管理，查看版本  
 --defined-only：仅显示定义的符号，这个从英文翻译过来可能会有偏差，故贴上原文：  
 Display only defined symbols for each object file  
-  
+
 **nm输出内容解析**  
 * 首先，前面那一串数字，指的就是地址，如果是二进制目标文件，指的就是逻辑地址，并非程序最后运行时的地址。  
 * 然后，我们发现，每一个条目前面还有一个字母，类似'U','B','D等等，其实这些符号代表的就是当前条目所对应的内存所在部分  
 * 最右边的就是对应的符号内容了  
-  
+
 首要的需要讲解的就是第二点中字符所对应的含义，同样在还是在linux命令行下man nm指令可以得到：  
 A     ：符号的值是绝对值，不会被更改  
 B或b  ：未被初始化的全局数据，放在.bss段  
@@ -593,7 +588,7 @@ T或t  ：代码段的数据，.test段
 U     ：符号未定义  
 W或w  ：符号为弱符号，当系统有定义符号时，使用定义符号，当系统未定义符号且定义了弱符号时，使用弱符号。  
 ？    ：unknown符号  
-  
+
 #### objdump  
 objdump命令是用查看目标文件或者可执行的目标文件的构成的gcc工具。可以用来反汇编代码。  
 `objdump <option(s)> <file(s)>`  
@@ -604,20 +599,20 @@ objdump命令是用查看目标文件或者可执行的目标文件的构成的g
 `objdump -C <file(s)>`: 将C++符号名逆向解析  
 `objdump -l <file(s)>`: 反汇编代码中插入文件名和行号  
 `objdump -j section <file(s)>`: 仅反汇编指定的section  
-  
+
 -T --dynamic-syms  
 显示文件的动态符号表入口，仅仅对动态目标文件意义，比如某些共享库。它显示的信息类似于 nm -D|–dynamic 显示的信息。  
-  
+
 对于 arm 平台的反汇编：  
 sudo apt-get install gcc-arm-none-eabi  
 arm-linux-gnueabihf-objdump  
 arm-linux-gnueabi-objdump  
-  
+
 #### pmap  
 查看进程的内存映像信息  
-  
+
 ## 工具  
-  
+
 ### linux 串口工具  
 #### minicom  
 minicom -s  修改设置，包括预置场景  
@@ -625,12 +620,12 @@ minicom -s  修改设置，包括预置场景
 在帮助里按 o 可以进行端口配置  
 打开串口后 ctrl+a q 退出  
 使用功能菜单时按 Esc 基本都可以返回  
-  
+
 对于mac，meta键默认是esc，但可以修改  
-  
+
 #### picocom  
 minicom的精简版  
-  
+
 ### linux 调试工具  
 #### GDB基本用法  
 **基本指令：参考宋宝华的书**  
@@ -659,7 +654,7 @@ commandfile的编写按照命令行敲命令的顺序即可
   查看当前用户使用的命令等相关信息  
 注意：无论在哪里设置参数，只要设置完就可以直接使用r运行，默认带有参数，除非另作修改更新，才会使用新的参数  
 ```  
-  
+
 2. 列出代码  
 ```shell  
 $(gdb)  list <show number>  
@@ -670,7 +665,7 @@ $(gdb)  set listsize <num> # 修改 list 显示的行数
 $(gdb)  tui enable    # 使用独立的代码窗口  
 $(gdb)  layout src    # 使用独立的代码窗口  
 $(gdb)  layout asm    # 使用独立的代码窗口，汇编语言  
-  
+
 layout的使用：  
 layout：用于分割窗口，可以一边查看代码，一边测试。主要有以下几种用法：  
 layout src：显示源代码窗口  
@@ -684,7 +679,7 @@ Ctrl + x，再按1：单窗口模式，显示一个窗口
 Ctrl + x，再按2：双窗口模式，显示两个窗口  
 Ctrl + x，再按a：回到传统模式，即退出layout，回到执行layout之前的调试窗口。  
 ```  
-  
+
 3. 调试控制  
 ```shell  
 $(gdb)  run # 运行，简写 r，后边可跟命令行参数，如果没有设置断点，不会停下。  
@@ -719,7 +714,7 @@ info terminal 用于显示程序用到的终端模式
 在gdb中也可以使用重定向控制程序输出，如 run > outfile  
 用tty命令可以指定输入输出的终端设备，如 tty /dev/ttyS1  
 ```  
-  
+
 4. 单步调试：  
 ```shell  
 1) next [<count>]  # 可简写为 n，单步执行，不会进入函数  
@@ -732,7 +727,7 @@ info terminal 用于显示程序用到的终端模式
 6) setpi (缩写为si) 和 nexti (缩写为ni)  
    stepi 和 nexiti 用于单步跟踪一条机器指令。比如，一条c程序代码有可能由数条机器指令完成，stepi 和 nexiti 可以单步执行机器指令，相反，setp和next是c语言级别的命令。另外，运行 display/i $pc 命令后，单步跟踪会在打出程序代码的同时打出机器指令，即汇编代码。  
 ```  
-  
+
 5. 断点调试：  
 ```shell  
 1) break <func> # 进入函数时停住，c++ 可以使用 class::function 或 function(type,type)   
@@ -755,7 +750,7 @@ info terminal 用于显示程序用到的终端模式
     end  
     如果不填 break point idx 默认使用最后一个中断点  
 ```  
-  
+
 6. 调试过程中的信息查询和处理  
 ```shell  
 1）print[/<f>] <expr>  
@@ -795,45 +790,45 @@ info terminal 用于显示程序用到的终端模式
         f:按浮点数格式显示变量。  
     u: 就是指以多少个字节作为一个内存单元-unit,默认为4。当然u还可以用被一些字符表示，如b=1 byte，h=2 bytes，w=4 bytes，g=8 bytes。  
     <addr>: 表示内存地址。  
-  
+
     整合这个命令的诠释：就是以addr为起始地址，返回n个单元的值，每个单元对应u个字节，输出格式是f。  
     如：x/ 3uh 0x54320表示：以地址0x54320为起始地址，返回3个单元的值，每个单元有两个字节，输出格式为无符号十六进制。  
     也就是说返回了3*2=6个字节的数据，以十六进制输出，这6个字节的数据，每两个字节为一个单元输出，共输出3个单元。  
-  
+
 5) examine 命令用于查看内存，而 set 命令用于修改内存。它的命令格式是“set* 有类型的指针=value”  
 6) info 命令  
     info 命令可以用来在调试时查看奇存器、断点、观察点和信号等信息。要查看寄存器的值可以使用如下命令  
     info registers（查看除了浮点寄存器以外的寄存器）  
     info a11-registers（查看所有寄存器）  
     info registers ＜regname...> （查看所指定的寄存器）  
-  
+
     要查看断点信息，可以使用如下命令：  
     info break  
       
     要列出当 前所设置的所有观察点，可使用如下命令：  
     info watchpoints  
-  
+
     要查看有哪些信号正在被 GDB 检测，可使用如下命令：  
     info signals  
     info handle  
     也可以使用 info line 命令来查看源代码在内存中的地址。info line 后面可以跟行号、函数名、文件名:行号、文件名:函数名等各种形式，例如用下面的命令会打印出所指定的源码在运行时的内存地址：  
     info line tst.c: func  
-  
+
     查看进程(包括进程号)：  
     info inferiors  
-  
+
     查看线程：  
     info threads  
-  
+
     查看线程栈结构：  
     bt  
-  
+
     打印所有线程堆栈：  
     thread apply all bt  
-  
+
     切换线程：  
     thread n  # n 表示第几个线程  
-  
+
 7) 历史命令  
     mkdir -p ~/.config/gdb  
     echo 'set history save on' >> ~/.config/gdb/gdbinit  
@@ -842,7 +837,7 @@ info terminal 用于显示程序用到的终端模式
     set history filename gdb.history  
     set history save on  
     set history size 1000  
-  
+
 ```  
 7. 查看栈/帧相关的信息  
     1）查看调用栈信息：  
@@ -878,9 +873,9 @@ info terminal 用于显示程序用到的终端模式
     [rax,eax,ax,ah,al 关系](https://blog.csdn.net/MashiMaroJ/article/details/120646168)  
     ![](./Embedded_dev_notes.pic/Picture26.png)  
     ![](./Embedded_dev_notes.pic/Picture25.png)  
-  
+
 8. `disassemble <func>` # 命令用于反汇编，可用它来查看当前执行时的源代码的机器码，实际上只是把目前内存中的指令冲刷出来。  
-  
+
 9. 自定义函数  
     可以写在 --command 加载的文件里，也可以在gdb的命令行里定义，语法如下：  
     ```shell  
@@ -897,19 +892,30 @@ info terminal 用于显示程序用到的终端模式
     end  
     ```  
     使用时直接输入函数名就可以了  
-  
+
 10. 寄存器操作  
     ```shell  
     查看寄存器的值  
     info registers 打印所有寄存器  
     registers $<regName> 查看指定寄存器值，比print查看寄存器专业些  
     print $<regName> 查看指定寄存器值  
-  
+
     修改寄存器的值  
     set var $<regName>=<regVal>  
     ```  
-  
-  
+
+#### GDB交叉编译
+
+下载gdb源码：`https://sourceware.org/pub/gdb/releases/?C=M;O=D`
+
+配置：
+```
+mkdir build
+cd build
+```
+
+
+
 #### 嵌入式GDB远程调试  
 * 调试主机需要安装gdb-multiarch，这里需要与嵌入式设备匹配，我是用udooer的开发板的时候发现gdb-multiarch可以使用。  
 * 嵌入式设备需要安装gdbserver  
@@ -924,13 +930,13 @@ info terminal 用于显示程序用到的终端模式
 `gdbserver /dev/ttyS0 test`        其中/dev/ttyS0是嵌入式平台的通信设备  
 `gdb-multiarch <app>`  
 `(gdb) target remote /dev/ttyUSB0`  其中/dev/ttyUSB0是上位机的通信设备  
-  
-  
+
+
 #### LLDB 基本用法  
 lldb 与 gdb 使用方法大同小异，可以参考gdb使用，如果无法实现效果再细究是否有差异  
 lldb 与 gdb 的关系映射 [GDB to LLDB command map](https://lldb.llvm.org/use/map.html)  
 lldb 常用命令：[LLDB 常用命令](https://www.jianshu.com/p/81278ade3b80)  
-  
+
 **环境相关**  
 ```shell  
 (lldb) platform status  # 打印基本状态  
@@ -943,17 +949,17 @@ lldb 常用命令：[LLDB 常用命令](https://www.jianshu.com/p/81278ade3b80)
 $ lldb -s <debug.lldb> <app> # 相当于 gdb 的—command  
 $ lldb -- <args> # -- 相当于 gdb 的 --args  
 ```  
-  
+
 **远程设备执行：**  
 ```shell  
 lldb-server p --server --listen "*:<remotePort>"  
 ```  
-  
+
 **使用独立的代码窗口**  
 ```shell  
 (lldb) gui  
 ```  
-  
+
 **运行控制**  
 ```shell  
 run (r) - 启动目标程序，如果遇到断点则暂停  
@@ -963,7 +969,7 @@ continue (c) - 继续运行程序直到遇到断点。
 thread backtrace (bt) - 显示程序的调用栈信息，可以用bt缩写  
 frame (f) - 默认显示当前栈的内容，可以通过 `frame arg` 进入特定的 frame（用作输出本地变量）  
 ```  
-  
+
 **断点相关**  
 ```shell  
 (lldb) breakpoint list   # 列出所有断点，可简写 br l  
@@ -973,7 +979,7 @@ frame (f) - 默认显示当前栈的内容，可以通过 `frame arg` 进入特�
 (lldb) br dis <num> # 去使能断点  
 (lldb) br en <num> # 使能断点  
 ```  
-  
+
 **线程相关**  
 ```shell  
 process interrupt  # 暂停当时程序的运行  
@@ -982,12 +988,12 @@ thread select 1  # 选择线程 1，可简写为 t 1
 thread backtrace # 打印当前线程的调用战信息，可简写为 bt  
 thread backtrace all # 打印所有线程的调用栈信息  
 ```  
-  
+
 **变量相关**  
-  
-  
+
+
 #### 嵌入式LLDB远程调试  
-  
+
 **上位机：**  
 ```shell  
 $ lldb  
@@ -1003,7 +1009,7 @@ $ lldb
 (lldb) platform process list # 列出远程系统上的进程  
 (lldb) attach 68639 # attach 到进程上  
 ```  
-  
+
 **嵌入式系统：**  
 ```shell  
 lldb-server 基本使用方法，（server可以启动一次循环调试使用）：  
@@ -1011,14 +1017,14 @@ Usage:
   lldb-server v[ersion]  
   lldb-server g[dbserver] [options]  
   lldb-server p[latform] [options]  
-  
+
 当lldb工作再 platform 模式时：  
 Usage:  
   lldb-server p [--log-file log-file-name] [--log-channels log-channel-list] [--port-file port-file-path] --server --listen port  
 例如：lldb-server p --server --listen "*:8888"  
 注意：这里需要在一个可以运行文件的路径下启动server，例如在 /vendor/bin 下执行就可以正常调试，但是如果在/sdcard下执行就不能正常调试，会返回process launch failed: 'a' packet returned an error: 8错误  
 ```  
-  
+
 使用demo：  
 ```shell  
 lldb-server p --server --listen "*:8888"    # 在可执行文件的路径下  
@@ -1028,10 +1034,10 @@ platform settings -w /vendor/bin
 file mpi_dec_test  
 r -i output.h264 -t 7  
 ```  
-  
+
 海强的 vscode 配置  
 ![](./Embedded_dev_notes.pic/Picture16.png)  
-  
+
 #### ADB调试基本指令  
 ```shell  
 连接设备的adb接口  
@@ -1067,7 +1073,7 @@ adb 网络模式
     adb tcpip 5555  
     adb connect 192.168.0.101:5555  
 ```  
-  
+
 #### ADB+gdb调试(命令行)  
 ```shell  
 嵌入式设备执行： gdbserver :<port> <app> <param>  
@@ -1082,12 +1088,12 @@ adb 网络模式
         注意：这里的gdb应该使用nkd里的gdb，  
         例如：android-ndkbuilt/linux-x86_64/bin/gdb  
 ```  
-  
+
 #### vscode 本地调试  
 ![](./Embedded_dev_notes.pic/Picture17.png)  
 ![](./Embedded_dev_notes.pic/Picture18.png)  
 ![](./Embedded_dev_notes.pic/Picture19.png)  
-  
+
 #### vscode 调试+gdb 远程调试（adb环境）  
 **launch 模式：**  
 1. 在嵌入式平台上启动gdbserver，方法与ADB+gdb调试(命令行) 一致  
@@ -1118,8 +1124,8 @@ media           357      1 0 04:38:15 ?     00:00:01 mediaserver
 root           2324   2321 0 07:02:00 pts/3 00:00:00 grep mediaserver  
 rk3566_r:/ # gdbserver :8888 –attach 357  
 ```  
-  
-  
+
+
 #### core dump
 [Ubuntu 20 core dumped（核心已转储）问题分析](https://blog.csdn.net/scjdas/article/details/128585787)
 
@@ -1176,7 +1182,7 @@ ulimit 命令是与shell有关的，并非所有shell都内置该命令，因此
 
 
 
-  
+
 #### addr2line工具  
 addr2line工具是一个可以将指令的地址和可执行映像转换为文件名、函数名和源代码行数的工具。这在内核执行过程中出现崩溃时，可用于快速定位出出错的位置，进而找出代码的bug。  
 **常用参数：**  
@@ -1190,7 +1196,7 @@ addr2line工具是一个可以将指令的地址和可执行映像转换为文�
 -p	使得该函数的输出信息更加人性化：每一个地址的信息占一行  
 ```  
 示例：`addr2line -f -e <elfFile> <Num>`  
-  
+
 **使用方法**  
 1. 编译可执行文件时要注意添加-g参数，保留调试信息  
 2. 查找系统信息，然后定位代码  
@@ -1200,13 +1206,13 @@ dmesg
 ```  
 这条信息里，ip（指令指针寄存器）字段后面的数字就是test程序出错时程序执行的位置。使用addr2line就可以将4005f5定位到代码的位置：  
 `addr2line 4005f5 -e test -f -s -C`  
-  
+
 **原理**  
 addr2line如何找到的这一行呢。在可执行程序中都包含有调试信息（所以编译的时候需要加-g选项），其中很重要的一份数据就是源程序的行号和编译后的机器代码之间的对应关系Line Number Table。Line Number Table存储在可执行程序的.debug_line域。  
 使用如下命令  
 ```shell  
 $ readelf -w test | grep "advance Address"  
-  
+
 [0x000000ca]  Special opcode 7: advance Address by 0 to 0x4005e7 and Line by 2 to 3  
 [0x000000cb]  Special opcode 146: advance Address by 10 to 0x4005f1 and Line by 1 to 4  
 [0x000000cc]  Special opcode 104: advance Address by 7 to 0x4005f8 and Line by 1 to 5  
@@ -1220,13 +1226,13 @@ $ readelf -w test | grep "advance Address"
 [0x000000d6]  Special opcode 76: advance Address by 5 to 0x40064b and Line by 1 to 15  
 ```  
 观察第二行和第三行，源代码的第4行的指令起始地址是0x4005f1， 第5行的起始地址是0x4005f8，可以知道0x4005f5位置的指令是属于第4行代码的。  
-  
+
 #### hexdump  
 hexdump是Linux下的一个二进制文件查看工具，它可以将二进制文件转换为ASCII、八进制、十进制、十六进制格式进行查看。  
 ```shell  
 hexdump: [-bcCdovx] [-e fmt] [-f fmt_file] [-n length] [-s skip] [file ...]	  
 ```  
-  
+
 此命令参数是Red Hat Enterprise Linux Server release 5.7下hexdump命令参数，不同版本Linux的hexdump命令参数有可能不同。  
 ```shell  
 -b  每个字节显示为8进制。一行共16个字节，一行开始以十六进制显示偏移值  
@@ -1241,7 +1247,7 @@ hexdump: [-bcCdovx] [-e fmt] [-f fmt_file] [-n length] [-s skip] [file ...]
 -v  The -v option causes hexdump to display all input data.  Without the -v option, any number of groups of output lines, which would be identical to the immediately preceding group of output lines  
 -x  双字节十六进制显示  
 ```  
-  
+
 #### ldd  
 ```shell  
 ldd命令用于打印可执行文件或者库文件所依赖的共享库列表。  
@@ -1254,10 +1260,10 @@ ldd(选项)(参数)
     -r：执行数据对象和函数的重定位，并且报告任何丢失的对象和函数；  
     --help：显示帮助信息。  
 ```  
-  
+
 #### ar  
     ar命令可以用来创建、修改库，也可以从库中提出单个模块。  
-  
+
 #### 查看程序搜索库的路径  
 LD_DEBUG1.LD_DEBUG使用方法如下:  
 LD_DEBUG=libs ./app  
@@ -1382,12 +1388,29 @@ curl cheat.sh/ls
 ### Linux系统性能分析
 
 #### top 使用技巧  
-top -H 按照线程查看，或者启动top之后按 H 也可以  
-top 按照进程查看  
-top -H | grep <> 按照筛选项查看  
-  
-参考博客： [Linux top命令详解：持续监听进程运行状态](http://c.biancheng.net/view/1065.html)  
-  
+`top -H` 按照线程查看，或者启动top之后按 H 也可以  
+`top` 按照进程查看  
+`top -H | grep <>` 按照筛选项查看  
+
+参考博客： 
+[Linux top命令详解：持续监听进程运行状态](http://c.biancheng.net/view/1065.html)
+
+在⽬前的多核架构下，不同版本的 top 对占有率的定义是有差别的，例如 toybox 版本显⽰
+的CPU占有率是针对单 核的，也就是说如果SOC有四个核，线程A如果占满⼀个核，那 toybox
+显⽰的占有率是100%。⽽ busybox 则与之相反，其占有率是按所有CPU核来算的，同样场景下
+线程A的占有率只会显⽰25%。总的说来，对⽐CPU占有率， 最好⽤同⼀个版本的 top 来对⽐
+才是最准的。
+
+
+还有就是要注意top也是有精度的，它的原理是读取内核提供的进程信息`/proc/pid/stat`
+和`/proc/stat`，所 以它完全依赖于Linux内核的调度粒度和使⽤场景。举个例⼦， stat
+统计的单位是jiffies，假设⽬前内核的HZ设的 是300，并且启⽤了⾼精度定时器，那差不多
+就是3ms⼀个jiffies，如果进程A以1ms甚⾄更⼩的间隔重复去睡眠，然后起来做⼀点事情，
+那就可能出现这个3ms中进程A实际执⾏了挺多次，但是由于3ms间隔起始和结束刚好这个CPU
+都在执⾏ idle 进程，这个3ms就被算到 idle 进程⾝上了。所以，在HZ设置的⽐较⼩，进程
+又频繁的⼩跑⼩睡的场景下，其 idle 进程的统计会有⼀些误差，CPU占有率越低，idle误差
+越⼤。
+
 **选项：**  
 ```shell  
     -d 秒数：指定 top 命令每隔几秒更新。默认是 3 秒；  
@@ -1397,7 +1420,7 @@ top -H | grep <> 按照筛选项查看
     -s：使 top 命令在安全模式中运行，避免在交互模式中出现错误；  
     -u 用户名：只监听某个用户的进程；  
 ```  
-  
+
 在 top 命令的显示窗口中，还可以使用如下按键，进行一下交互操作：  
 ```shell  
     ? 或 h：显示交互模式的帮助；  
@@ -1414,7 +1437,7 @@ top -H | grep <> 按照筛选项查看
     U：筛选用户  
     V：按照树状图显示  
 ```  
-  
+
 **第一部分的作用**  
 ```shell  
 第一行为任务队列信息  
@@ -1422,14 +1445,14 @@ top -H | grep <> 按照筛选项查看
     up 1 day, 13:32	                系统的运行时间.本机己经运行 1 天 13 小时 32 分钟  
     2 users	                        当前登录了两个用户  
     load average: 0.00,0.00，0.00	系统在之前 1 分钟、5 分钟、15 分钟的平均负载。如果 CPU 是单核的，则这个数值超过 1 就是高负载：如果 CPU 是四核的，则这个数值超过 4 就是高负载 （这个平均负载完全是依据个人经验来进行判断的，一般认为不应该超过服务器 CPU 的核数）  
-  
+
 第二行为进程信息  
     Tasks: 95 total	系统中的进程总数  
     1 running	    正在运行的进程数  
     94 sleeping	    睡眠的进程数  
     0 stopped	    正在停止的进程数  
     0 zombie	    僵尸进程数。如果不是 0，则需要手工检查僵尸进程  
-  
+
 第三行为 CPU 信息  
     Cpu(s): 0.1 %us	用户模式占用的 CPU 百分比  
     0.1%sy	        系统模式占用的 CPU 百分比  
@@ -1439,26 +1462,26 @@ top -H | grep <> 按照筛选项查看
     0.0%hi	        硬中断请求服务占用的 CPU 百分比  
     0.1%si	        软中断请求服务占用的 CPU 百分比  
     0.0%st	        st（steal time）意为虚拟时间百分比，就是当有虚拟机时，虚拟 CPU 等待实际 CPU 的时间百分比  
-  
+
 第四行为物理内存信息  
     Mem: 625344k total	物理内存的总量，单位为KB  
     571504k used	    己经使用的物理内存数量  
     53840k&ee	        空闲的物理内存数量。我们使用的是虚拟机，共分配了 628MB内存，所以只有53MB的空闲内存  
     65800k buffers	    作为缓冲的内存数量  
-  
+
 第五行为交换分区（swap）信息  
     Swap: 524280k total	交换分区（虚拟内存）的总大小  
     Ok used	            已经使用的交换分区的大小  
     524280k free	    空闲交换分区的大小  
     409280k cached	    作为缓存的交换分区的大小  
-  
-  
+
+
 我们还要解释一下缓冲（buffer）和缓存（cache）的区别：  
 缓存（cache）是在读取硬盘中的数据时，把最常用的数据保存在内存的缓存区中，再次读取该数据时，就不去硬盘中读取了，而在缓存中读取。  
 缓冲（buffer）是在向硬盘写入数据时，先把数据放入缓冲区,然后再一起向硬盘写入，把分散的写操作集中进行，减少磁盘碎片和硬盘的反复寻道，从而提高系统性能。  
 简单来说，缓存（cache）是用来加速数据从硬盘中"读取"的，而缓冲（buffer）是用来加速数据"写入"硬盘的。  
 ```  
-  
+
 **第二部分的作用**  
 ```shell  
 top 命令的第二部分输出，主要是系统进程信息，各个字段的含义如下：  
@@ -1866,6 +1889,10 @@ tips:
 **注意**:
 如果使用report命令进行查找的时候，发现so现实的Symbol都是地址，而不是函数内容。这多数是因为在安卓编译的时候，设备上使用的so库已经被strip过，也就是说，已经抛离了.symbol段的内容。那么，我们需要将带有Symbol信息的so下载到设备上。同时需要将so放置到perf.data中记录的相同的路径(否则，simpleperf无法找到它)。如果找不到路径，可以在perf.data文件中直接搜索需要选定的so库的名称，即可查看到路径。
 
+##### kernelshare
+
+待完善
+
 #### perf （Linux性能分析工具）  
 references:  
 
@@ -1945,10 +1972,10 @@ $ sudo perf record -e cpu-clock -g -p pid
 # -g 表示记录调用栈  
 # sleep 30 则是持续 30 秒  
 # -F 指定采样频率为 99Hz(每秒99次), 如果 99次 都返回同一个函数名, 那就说明 CPU 这一秒钟都在执行同一个函数, 可能存在性能问题.  
-  
+
 # 如果svg图出现unknown函数，使用如下  
 $ sudo perf record -e cpu-clock --call-graph dwarf -p pid  
-  
+
 #==> 使用程序名监控程序  
 $ sudo perf record -e cpu-clock -g -p `pgrep your_program`  
 
@@ -1964,7 +1991,7 @@ sudo perf report
 或  
 sudo perf report -n --stdio      // 树状图  
 ```  
-  
+
 **第二步：生成火焰图**  
 ```shell  
 从github下载分析脚本  
@@ -1984,11 +2011,11 @@ perf script | FlameGraph/stackcollapse-perf.pl | FlameGraph/flamegraph.pl > proc
 ```  
 ![](./Embedded_dev_notes.pic/Picture21.png)  
 y 轴表示调用栈，每一层都是一个函数。调用栈越深，火焰就越高，顶部就是正在执行的函数，下方都是它的父函数。  
-  
+
 x 轴表示抽样数，如果一个函数在 x 轴占据的宽度越宽，就表示它被抽到的次数多，即执行的时间长。注意，x 轴不代表时间，而是所有的调用栈合并后，按字母顺序排列的。  
-  
+
 火焰图就是看顶层的哪个函数占据的宽度最大。只要有"平顶"（plateaus），就表示该函数可能存在性能问题。  
-  
+
 颜色没有特殊含义，因为火焰图表示的是 CPU 的繁忙程度，所以一般选择暖色调。  
 
 
@@ -2026,7 +2053,54 @@ perf-event是 Linux 用户的主要跟踪工具，它的源代码位于 Linux �
 #### kernelshark分析系统调度情况  
 sudo trace-cmd record -e 'sched_wakeup*' -e sched_switch -e 'sched_migrate*'  
 kernelshark trace.dat  
-  
+
+#### vmstat
+
+vmstat 是⼀个⾮常有⽤的⼯具，可以显⽰有关操作系统内存，进程，中断，分页等⽅⾯的
+统计信息。这个⼯具⾮ 常实⽤，因为它能够提供有关系统活动的实时快照，这对于解决性能
+问题，分析系统瓶颈⾮常有帮助。
+
+vmstat的基本语法如下：
+```
+# 打印memory的统计信息，delay是间隔时间，单位是秒，count是重复的次数
+usage: vmstat [-n] [DELAY [COUNT]]
+-n Display the header only once
+```
+
+⽰例：
+```
+rk3562_t:/data/local/tmp # vmstat 2 5
+
+procs ------------memory------------ ----swap--- -----io---- ---system-- ----cpu---
+r b swpd free buff cache si so bi bo in cs us sy id warn
+2 0 238336 408720 2212 1830524 1 1 35 35 0 1386 3 3 94 0
+1 0 238336 409212 2212 1830656 0 0 0 0 0 6592 25 2 72 0
+2 0 238336 407920 2212 1830632 0 0 0 96 0 6805 26 3 71 0
+1 0 238336 407668 2212 1830632 0 0 0 0 0 6620 26 2 72 0
+3 0 238336 381756 2212 1833236 96 0 1350 136 1 11769 49 15 35 0
+```
+
+结果分析：
+* procs 下的 r 和 b 分别表⽰运⾏队列中的进程数量和阻塞进程的数量。
+* memory 下的 swpd, free, buff, cache 分别表⽰使⽤的交换空间⼤⼩，空闲内存⼤⼩，
+⽤作缓冲的内存⼤⼩（⽂件写），⽤作缓存的内存⼤⼩（⽂件读）。
+* swap 下的 si 和 so 分别表⽰从磁盘交换到内存，和从内存交换到磁盘的数量。
+* io 下的 bi 和 bo 分别表⽰从块设备接收和发送的块数量。
+* system 下的 in 和 cs 分别表⽰每秒接收的中断数和上下⽂切换次数。
+* cpu 下的 us , sy , id , wa 分别表⽰⽤户时间，系统时间，空闲时间，等待 I/O 时间，
+单位都是百分⽐。
+
+所以上图的vmstat统计结果，我们可以看到在最后⼀次统计信息中，cpu的负载在急剧上升，
+并且不是堵在IO 上。
+
+
+#### IO相关工具
+
+##### iostat
+##### iotop
+##### ioblame
+##### blktrace
+
 
 ### Linux网络工具
 
@@ -2042,7 +2116,7 @@ DNS问题ping,tcping,dig,nslookup
 延时问题ping,tcping  
 运营商问题:切换不同的代理出口  
 抓包问题：tcpdump，wireshark，fiddler  
-  
+
 **硬件**  
 替换法，替换稳定的器件或者稳定的通路  
 验证原先的通路是否有问题  
@@ -2061,7 +2135,7 @@ nc -l <port> 监听本地端口
 nc <ip> <port> < <fileName>  
 nc -l <port> > <fileName>  
 ```  
-  
+
 
 #### netstat  
 ```shell  
@@ -2073,7 +2147,7 @@ netstat -atulnp会显示所有端口和所有对应的程序，用grep管道可�
     -l ：listening，列出当前监听服务  
     -p ：program，列出服务程序的PID  
 ```  
-  
+
 #### ssh 隧道  
 **正向隧道**  
 client    --> server  
@@ -2086,7 +2160,7 @@ ssh -N -f [-g] -L <locIP>:<locPort>:<remoteIP>:<remotePort> <remoteUserName>@<re
 -g: 开启网关功能，开启该选项可以监听当前主机所有IP的 <locPort>  
 <locIP>: locIP可以缺省，此时默认 127.0.0.1，但这种情况下只能在本机访问 <locPort> 端口，来访问远程主机。如果想其他设备访问 本机，进而转发到 远程主机，则 <locIP> 需要改为本机在网络中的IP  
 ```  
-  
+
 **反向隧道**  
 场景：  
 在 client 无法访问到 server 的 IP 时，但是 server 可以访问到 client时，可能需要从 server 建立反向隧道。  
@@ -2098,7 +2172,7 @@ ssh -N -f -R <remoteIP>:<remotePort>:<locIP>:<locPort> <remoteUserName>@<remoteI
 其中：  
 <remoteIP>: 可以缺省不写，因为无论写不写都只能监听 remote 主机的 127.0.0.1 即：remote 主机不能被当作跳板，即便开启 -g 也不行  
 ```  
-  
+
 #### iperf3  
 ```shell  
 （1）-s,--server：iperf服务器模式，默认启动的监听端口为5201，eg：iperf -s  
@@ -2110,7 +2184,7 @@ ssh -N -f -R <remoteIP>:<remotePort>:<locIP>:<locPort> <remoteUserName>@<remoteI
 （7）-b，--bandwidth [K|M|G]：指定UDP模式使用的带宽，单位bits/sec，默认值是1 Mbit/sec。  
 （8）-t，--time：指定数据传输的总时间，即在指定的时间内，重复发送指定长度的数据包。默认10秒。  
 （9）-A：CPU亲和性，可以将具体的iperf3进程绑定对应编号的逻辑CPU，避免iperf进程在不同的CPU间调度。  
-  
+
 举例：  
 #iperf3 -s -p <serPort> -i 1  
 #iperf3 -c <serIP> -p <serPort> -i 1 -t 60  
@@ -2118,7 +2192,7 @@ Interval表示时间间隔。
 Transfer表示时间间隔里面转输的数据量。  
 Bandwidth是时间间隔里的传输速率。  
 ```  
-  
+
 
 #### arp
 
@@ -2536,16 +2610,10 @@ from [超详细解析wireshark捕获过滤器语法](https://zhuanlan.zhihu.com/
 
 
 
-
-
-
-
-
-
 ## 交叉编译环境  
 参考博客： https://blog.csdn.net/jpy1391/article/details/113798059  
 交叉编译就是在一种平台上编译出能运行在体系结构不同的另一种平台上的程序，比如在PC平台（X86 CPU）上编译出能运行在以ARM为内核的CPU平台上的程序，编译得到的程序在X86 CPU平台上是不能运行的，必须放到ARM CPU平台上才能运行，虽然两个平台用的都是Linux系统。 交叉编译工具链是一个由编译器、连接器和解释器组成的综合开发环境，交叉编译工具链主要由binutils、gcc和glibc三个部分组成。有时出于减小 libc 库大小的考虑，也可以用别的 c 库来代替 glibc，例如 uClibc、dietlibc 和 newlib。  
-  
+
 **分类和说明**  
 从授权上，分为免费授权版和付费授权版。  
 免费版目前有三大主流工具商提供，第一是GNU（提供源码，自行编译制作），第二是 Codesourcery，第三是Linora。  
@@ -2555,8 +2623,8 @@ from [超详细解析wireshark捕获过滤器语法](https://zhuanlan.zhihu.com/
 * aarch64-linux-gnu-gcc：是由 Linaro 公司基于GCC推出的的ARM交叉编译工具。可用于交叉编译ARMv8 64位目标中的裸机程序、u-boot、Linux kernel、filesystem和App应用程序。  
 * arm-none-elf-gcc：是 Codesourcery 公司（目前已经被Mentor收购）基于GCC推出的的ARM交叉编译工具。可用于交叉编译ARM MCU（32位）芯片，如ARM7、ARM9、Cortex-M/R芯片程序。  
 * arm-none-eabi-gcc：是 GNU 推出的的ARM交叉编译工具。可用于交叉编译ARM MCU（32位）芯片，如ARM7、ARM9、Cortex-M/R芯片程序。  
-  
-  
+
+
 命名规则  
 ```shell  
 交叉编译工具链的命名规则为：arch [-vendor] [-os] [-(gnu)eabi]  
@@ -2568,7 +2636,7 @@ from [超详细解析wireshark捕获过滤器语法](https://zhuanlan.zhihu.com/
     arm-none-eabi：这个是没有操作系统的，自然不可能支持那些跟操作系统关系密切的函数，比如fork(2)。他使用的是newlib这个专用于嵌入式系统的C库。  
     arm-none-linux-eabi：用于Linux的，使用Glibc  
 ```  
-  
+
 实例  
 1. arm-none-eabi-gcc  
 （ARM architecture，no vendor，not target an operating system，complies with the ARM EABI）  
@@ -2579,21 +2647,21 @@ from [超详细解析wireshark捕获过滤器语法](https://zhuanlan.zhihu.com/
 3. arm-eabi-gcc  
 Android ARM 编译器。  
 4. armcc  
-ARM 公司推出的编译工具，功能和 arm-none-eabi 类似，可以编译裸机程序（u-boot、kernel），但是不能编译 Linux 应用程序。armcc一般和ARM开发工具一起，Keil MDK、ADS、RVDS和DS-5中的编译器都是armcc，所以 armcc 编译器都是收费的（爱国版除外，呵呵~~）。  
+ARM 公司推出的编译工具，功能和 arm-none-eabi 类似，可以编译裸机程序（u-boot、kernel），但是不能编译 Linux 应用程序。armcc一般和ARM开发工具一起，Keil MDK、ADS、RVDS和DS-5中的编译器都是armcc，所以 armcc 编译器都是收费的（爱国版除外，呵呵）。  
 5. arm-none-uclinuxeabi-gcc 和 arm-none-symbianelf-gcc  
 arm-none-uclinuxeabi 用于uCLinux，使用Glibc。  
 arm-none-symbianelf 用于symbian，没用过，不知道C库是什么 。  
-  
+
 **Codesourcery**  
 Codesourcery推出的产品叫Sourcery G++ Lite Edition，其中基于command-line的编译器是免费的，在官网上可以下载，而其中包含的IDE和debug 工具是收费的，当然也有30天试用版本的。  
 目前CodeSourcery已经由明导国际(Mentor Graphics)收购，所以原本的网站风格已经全部变为 Mentor 样式，但是 Sourcery G++ Lite Edition 同样可以注册后免费下载。  
 Codesourcery一直是在做ARM目标 GCC 的开发和优化，它的ARM GCC在目前在市场上非常优秀，很多 patch 可能还没被gcc接受，所以还是应该直接用它的（而且他提供Windows下[mingw交叉编译的]和Linux下的二进制版本，比较方便；如果不是很有时间和兴趣，不建议下载 src 源码包自己编译，很麻烦，Codesourcery给的shell脚本很多时候根本没办法直接用，得自行提取关键的部分手工执行，又费精力又费时间，如果想知道细节，其实不用自己编译一遍，看看他是用什么步骤构建的即可，如果你对交叉编译器感兴趣的话。  
-  
+
 **ABI 和 EABI**  
 ABI：二进制应用程序接口(Application Binary Interface (ABI) for the ARM Architecture)。在计算机中，应用二进制接口描述了应用程序（或者其他类型）和操作系统之间或其他应用程序的低级接口。  
 EABI：嵌入式ABI。嵌入式应用二进制接口指定了文件格式、数据类型、寄存器使用、堆积组织优化和在一个嵌入式软件中的参数的标准约定。开发者使用自己的汇编语言也可以使用 EABI 作为与兼容的编译器生成的汇编语言的接口。  
 两者主要区别是，ABI是计算机上的，EABI是嵌入式平台上（如ARM，MIPS等）。  
-  
+
 **arm-linux-gnueabi-gcc 和 arm-linux-gnueabihf-gcc**  
 两个交叉编译器分别适用于 armel 和 armhf 两个不同的架构，armel 和 armhf 这两种架构在对待浮点运算采取了不同的策略（有 fpu 的 arm 才能支持这两种浮点运算策略）。  
 其实这两个交叉编译器只不过是 gcc 的选项 -mfloat-abi 的默认值不同。gcc 的选项 -mfloat-abi 有三种值 soft、softfp、hard（其中后两者都要求 arm 里有 fpu 浮点运算单元，soft 与后两者是兼容的，但 softfp 和 hard 两种模式互不兼容）：  
@@ -2622,50 +2690,61 @@ COLLECT_GCC_OPTIONS=’-v’ ‘-march=armv7-a’ ‘-mfloat-abi=hard’ ‘-mfp
 arm-linux-gnueabi-gcc -v mfloat.c  
 COLLECT_GCC_OPTIONS=’-v’ ‘-march=armv7-a’ ‘-mfloat-abi=softfp’ ‘-mfpu=vfpv3-d16′ ‘-mthumb’ -mfloat-abi=softfp  
 可看出使用softfp模式。  
-  
+
 ## 构建交叉编译工具链待整理  
 参考博客： https://zhuanlan.zhihu.com/p/25752954  
-  
-## gcc llvm 和 clang  
-https://www.jianshu.com/p/1367dad95445  
-https://zhuanlan.zhihu.com/p/357803433   
-  
+
+## gcc llvm 和 clang
+
+[GCC和clang/LLVM](https://zhuanlan.zhihu.com/p/424081696)  
+[深入浅出让你理解什么是LLVM](https://www.jianshu.com/p/1367dad95445)  
+[详解三大编译器：gcc、llvm 和 clang](https://zhuanlan.zhihu.com/p/357803433)  
+
+简言之：
+
+gcc是一个编译器，llvm和clang一起作为一个完整的编译器，llvm作为后端，clang作为前端
+
+
+## 许可证
+
+![](./Embedded_dev_notes.pic/Picture36.png)
+
 # 第三章 u-Boot 原理及移植  
-  
+
 ## u-boot介绍  
 待完善  
-  
+
 ## 常用指令及环境变量  
 ### 常用指令  
-  
+
 **help**  
 查看当前uboot版本所支持的所有命令，对于列出的命令并不是都能运行的，如果该命令并没有在板级文件中使能配置的话，那么直接在命令行中输入后按回车键，将会直接提示运行不了 。  
 如果我们想查看某个命令的详细用法的话，可以输入：  
 ```shell  
     =>help command_name  或  =>? command_name  
 ```  
-  
+
 **信息查询相关命令**  
 ```shell  
 bdinfo  
 查询当前板子的相关信息，可以查看板子的DRAM的大小以及DRAM的起始地址、当前使用的网络接口以及IP地址、波特率和uboot偏移地址以及偏移量等相关信息。  
-  
+
 version  
 查询uboot版本和交叉编译工具的相关信息。  
 ```  
-  
+
 **环境变量相关命令**  
 ```shell  
 printenv  
 打印环境变量，例如：当前串口的波特率baudrate、启动参数bootargs以及启动命令bootcmd等，这些环境变量都是字符串，能对其进行修改。  
-  
+
 setenv <name> <value>  
 设置环境变量，setenv  <name>  <value>，当修改环境变量有空格值的时候，例如bootcmd或者bootargs等，这个时候的环境变量值需要使用单引号括起来。setenv命令也可以用来新建环境变量。  
-  
+
 editenv <value>    编辑环境变量  
 saveenv    保存环境变量  
 ```  
-  
+
 **USB操作相关命令**  
 ```shell  
 指令                     功能  
@@ -2679,7 +2758,7 @@ usb dev [dev]           显示和设置当前USB存储设备
 usb part [dev]          显示USB存储设备[dev]的分区信息  
 usb read addr blk# cnt	读取USB存储设备数据  
 ```  
-  
+
 **网络传输相关命令**  
 ```shell  
 dhcp        boot image via network using DHCP/TFTP protocol  
@@ -2694,38 +2773,38 @@ bootp       boot image via network using BOOTP/TFTP protocol
 如果没有输入[目的SDRAM地址]，系统就是用编译时定义的CONFIG_SYS_LOAD_ADDR作为目的SDRAM地址  
 如果tftpboot和nfs命令没有定义[主机IP:]，则使用ENV中的serverip  
 其它命令必需定义[主机IP:]，否则会使用提供动态IP服务的主机IP作为[主机IP:]。  
-  
+
 **内存操作相关命令**  
 ```shell  
 md [.b, .w, .l] address [# of objects]  
     命令用法中的[.b, .w, .l]对应着byte、word、long，分别以1个字节、2个字节、4个字节来进行内存值显示，address表示要查看的内存起始地址，[# of objects]表示要查看的数据长度，和显示的数据格式有关，并且需要注意的是uboot命令中的数字都是十六进制的。  
     例如： md.b 80000000 14  等价  md.b 80000000 0x14  
-  
+
 nm [.b, .w, .l] address  
     nm命令用于修改指定地址的内存值。nm命令同样是使用[.b, .w, .l]来指定内存的操作格式，例如，想要使用修改0x80000000地址的数据为0x77，可使用下面的命令：  
     => nm.b 80000000  或 => nm.b 0x80000000  
-  
+
 mm [.b, .w, .l] address  
     mm命令也是可以用来修改内存值，但是使用mm命令修改内存值的时候，地址值将会自增，使用nm命令时，地址值将不会自增。  
-  
+
 mw [.b, .w, .l] address value [count]  
     mw命令用来使用一个指定的数据填充一段内存，该命令同样使用[.b, .w, .l]来指定操作格式，address表示要填充的内存起始地址，value表示要填充的数据，count是要填充的长度。  
     例如，使用.b格式将以0x80000000为起始地址的0x14个内存块填充为0x33，命令如下：  
     => mw.b 80000000 33 14  
-  
+
 cp [.b, .w, .l] source target count  
     cp命令是数据拷贝命令，用于将DRAM中的数据从一段内存中拷贝到另一段内存中，该命令同样使用[.b, .w, .l]来指定操作格式，source表示为内存源地址，target表示为目标地址，count为拷贝的长度。  
     例如，使用.b格式将0x80000000开始地址处的0x14个字节拷贝到0x80000100地址处，命令如下所示：  
     => cp.b 80000000 80000100 14  
     or  
     => cp.b 0x80000000 0x80000100 14  
-  
+
 cmp [.b, .w, .l] addr1 addr2 count  
     cmp命令用于比较两段内存的数据是否相等，该命令同样使用[.b, .w, .l]来指定操作格式，addr1为第一段内存首地址，addr2为第二段内存首地址，count表示要比较的长度。  
     例如，使用.b格式来比较0x80000000和0x80000100两个地址的数据是否相等，比较的长度为0x14个字节，命令如下：  
     => cmp.b 80000000 80000100 14  
 ```  
-  
+
 **emmc和sd卡相关操作命令**  
 对于uboot来说是支持emmc或者sd卡，因此也需要提供给用户emmc和sd卡的相关操作命令，uboot中常用于操作mmc设备的命令为"mmc"，mmc是一系列的命令，它的后面可以跟不同的参数  
 ```shell  
@@ -2761,17 +2840,17 @@ mmc partconf        设置指定mmc设备的PARTITION_CONFIG的值
 mmc rst             mmc设备复位  
 mmc setdsr          设置mmc设备DSR寄存器的值  
 ```  
-  
+
 **Nand Flash相关操作命令**  
 ```shell  
 uboot中除了有emmc子系统外，还具有nand子系统，所有uboot也是支持Nand Flash的。  
-  
+
 nand info  
 打印目标板上Nand Flash的相关信息，页面大小和00B大小等相关信息。  
-  
+
 nand device  
 显示Nand Flash的信息，也能用于切换目标板上的Nand Flash，如果目标板支持多块Nand Flash的话，可以使用该命令进行切换。  
-  
+
 nand erase  
 擦除Nand Flash，在对Nand Flash中写入数据之前，必须要先对写的区域进行擦除，然后才能保证数据能写入进擦除的区域内，nand erase命令的形式有3种，如下：  
 第一种形式如下：  
@@ -2785,14 +2864,14 @@ nand erase.part [clean] partition
 第三种形式如下：  
 nand erase.chip [clean]  
 该形式将会将整个Nand Flash进行擦除，nand erase命令一般是与nand write命令进行配合使用。  
-  
+
 nand read  
 nand read命令可以用于从Nand Flash中指定的地址读取指定大小的数据到DRAM中，该命令的使用格式如下：  
 nand read - addr off|partition size  
 命令使用格式中，addr表示DRAM的地址，off表示要读取的Nand Flash的区域的起始地址，size表示要读取的数据大小。  
 例如，可以使用下面的命令读取Linux内核镜像zImage文件到DRAM的0x80800000地址处：  
 => nand read 0x80800000 0x400000 0x1000000  
-  
+
 nand write  
 向Nand Flash中指定的地址写入指定大小的数据，一般和nand erase命令结合使用，还可以用来更新Nand Flash中的uboot、kernel和dtb等文件，该命令的使用格式如下：  
 nand write - addr off|partition size  
@@ -2812,7 +2891,7 @@ nand write - addr off|partition size
 另外，还可以使用bootz命令启动Linux内核，使用下面命令即可：  
 => bootz 0x80800000 - 0x83000000  
 ```  
-  
+
 **FAT格式文件系统相关操作命令**  
 ```shell  
 fatinfo <interface> [<dev[:part]>]  
@@ -2821,25 +2900,25 @@ fatinfo <interface> [<dev[:part]>]
 => mmc list  
 => mmc part  
 => fatinfo mmc 0:1  
-  
+
 fatls <interface> [<dev[:part]>] [directory]  
 查询FAT格式文件系统的目录和文件信息，<interface>表示要查询的接口，[<dev[:part]>]中dev表示要查询的设备号，part表示要查询分区，[directory]表示要查询的目录，如果该参数不输入的话，默认为根目录。  
 例如，查询我当前sd卡中分区1中的目录和文件，可以输入下面命令：  
 => fatls mmc 0:1  
 当我们再想查看img/目录下的目录或者文件时，可以使用下面的命令：  
 => fatls mmc 0:1 img/  
-  
+
 fstype  
 fstype命令可以用于查看mmc设备中某个分区的文件系统格式，fstyp命令具有两个用法，第一个用来查看mmc设备分区中的文件系统类型，第二个则是用来设置文件系统类型的环境变量，对于第一个命令用法，<interface>表示接口，例如mmc，<dev>:<part>中dev则表示要查询的设备号，part则是设备的分区。  
 例如，查看我当前目标板中sd设备的第一个分区的文件系统类型，可以使用下面命令：  
 => fstype mmc 0:1  
-  
+
 fatload <interface> [<dev[:part]> [<addr> [<filename> [bytes [pos]]]]]  
 fatload命令用来将指定的文件读取到DRAM内存中，<interface>表示设备接口，例如mmc，[<dev[:part]>中的dev表示设备号，part表示mmc设备的分区，<addr>则是文件读取到DRAM中的起始地址，<filename>则是要读取的文件的名字，bytes表示要读取多少字节的数据，如果该值为0或者未使用，则表示将要读取整个文件，pos表示要读的文件相对于文件首地址的偏移，如果为0或者未使用，则表示从文件首地址开始读取。  
 例如，在我当前的目标帮中，将sd卡中第一个分区中的img/u-boot-imx6ul14x14evk_nand.imx文件读取到DRAM中0x80000100起始地址中，可以使用下面的命令：  
 => fatls mmc 0:1 img/  
 => fatload mmc 0:1 80000100 img/u-boot-imx6ul14x14evk_nand.imx  
-  
+
 fatwrite  
 当在uboot的板级配置文件中定义了#define CONFIG_CMD_FAT宏，fatinfo、fatls、fatload命令才会出现在uboot命令中，而fatwrite命令则需要定义#define CONFIG_FAT_WRITE宏才会出现，因此，如果想要在uboot中使用fatwrite命令，则需要定义宏CONFIG_FAT_WRITE。   
 fatwrite命令可以用于将DRAM中的数据写入到mmc设备中去，命令格式中，<interface>表示为接口，例如mmc，<dev[:part]>中dev表示为设备号，part表示为mmc设备的分区，<addr>则为要写入的数据在DRAM中的起始地址，<filename>表示写入的数据文件的名字，<bytes>表示要写入的字节数。  
@@ -2849,7 +2928,7 @@ fatwrite命令可以用于将DRAM中的数据写入到mmc设备中去，命令�
 => fatwrite mmc 0:1 80000100 test.bin 14  
 => fatls mmc 0:1  
 ```  
-  
+
 **EXT格式文件系统相关操作命令**  
 uboot中除了有FAT格式文件系统的相关操作命令外，还有EXT格式文件系统的相关操作命令，这些命令和实现的功能如下所示：  
 ```shell  
@@ -2861,17 +2940,17 @@ ext4ls      列举目录中的文件
 ext4size    修改文件大小  
 ext4write   在root目录下新创建文件  
 ```  
-  
+
 **BOOT启动相关操作命令**  
 ```shell  
 boot  
 boot命令是用来启动Linux系统的，该命令将会运行bootcmd，也就是boot命令将会读取bootcmd这个环境变量，并运行这个环境变量中的命令，查看当前目标板中的bootcmd环境变量内容：print bootcmd  
-  
-  
+
+
 bootm [addr [arg ...]]  
 bootm命令用于启动uImage镜像，其中addr就是uImage镜像文件在DRAM的起始地址，另外它还有一些参数，如果要使用dtb或initrd的话，则就是在后面添加对应的DRAM地址。  
-  
-  
+
+
 bootz [addr [initrd[:size]] [fdt]]  
 bootz命令也是用来启动Linux系统，只不过启动的是Linux zImage镜像文件，命令中的addr是DRAM内存Linux镜像文件的起始地址，initrd是initrd文件在DRAM中的地址，fdt是设备树在DRAM中的地址，如果没有使用到initrd文件的话，则使用'-'进行替代，对于Linux镜像和设备树文件，我们可以通过读取eMMC或Nand Flash到DRAM中，当然，如果在网络接口可以使用的情况下，也可以使用NFS或TFTP服务将镜像下载到DRAM中，启动的原理是一样的。  
 例如，当Nand Flash中存储着我们需要启动的Linux系统镜像和设备树文件的话，可以使用下面命令进行启动：  
@@ -2882,28 +2961,28 @@ bootz命令也是用来启动Linux系统，只不过启动的是Linux zImage镜�
 使用bootz启动引导Linux系统：  
 => bootz 0x80800000 - 0x83000000  
 ```  
-  
+
 **其它常用uboot命令**  
 ```shell  
 reset  
 reset命令能用来复位CPU  
-  
+
 go addr [arg ...]  
 go命令能用于跳转到指定的内存地址处执行应用程序，命令用法中的addr就是内存的地址。  
-  
+
 run var [...]  
 run命令能用来运行环境变量中定义的命令，例如通过run bootcmd来运行bootcmd中定义的启动命令，能将Linux系统进行启动，该命令能运行我们自己定义的环境变量  
-  
-  
+
+
 mtest [start [end [pattern [iterations]]]]  
 mtest命令能用于进行内存读写测试，例如可以用来测试目标板DDR的稳定性，命令用法中的start是DRAM内存的起始地址，end是内存的结束地址。  
 例如我们向测试0x80000000到0x87800000这段内存，可以使用下面命令：  
 => mtest 80000000 87800000  
 测试的时候，如果想退出测试的话，可以使用键盘上的"Ctrl+C"组合键。  
 ```  
-  
+
 [常用u-boot命令详解（全）](https://blog.csdn.net/ghostyu/article/details/6968681)  
-  
+
 ### 环境变量  
 ```shell  
 变量                解释  
@@ -2914,7 +2993,7 @@ ipaddr          本地IP地址
 serverip        服务端地址  
 bootdelay       启动前的延时等待  
 ```  
-  
+
 ### 从uboot网络启动嵌入式设备  
 **搭建tftp服务器**  
 ```shell  
@@ -2931,19 +3010,19 @@ bootdelay       启动前的延时等待
 4. 重启 tftp 服务： $: sudo service tftpd-hpa restart  
 5. 使用 $: tftp <服务IP>  put/get 上传/下载  
 ```  
-  
+
 **关闭服务器防火墙**  
 ```shell  
 Ubuntu防火墙设置  
 1.安装  
     sudo apt-get install ufw  
-  
+
 2.启用  
     sudo ufw enable   
     sudo ufw default deny  
     运行以上两条命令后，开启了防火墙，并在系统启动时自动开启。  
     关闭所有外部对本机的访问，但本机访问外部正常。  
-  
+
 3.开启/禁用  
     sudo ufw allow|deny [service]  
     打开或关闭某个端口，例如：  
@@ -2954,83 +3033,83 @@ Ubuntu防火墙设置
     sudo ufw allow proto udp 192.168.0.1 port 53 to 192.168.0.2 port 53   
     sudo ufw deny smtp 禁止外部访问smtp服务   
     sudo ufw delete allow smtp 删除上面建立的某条规则   
-  
+
 4.查看防火墙状态  
     sudo ufw status  
-  
+
 一般用户，只需如下设置：  
 sudo apt-get install ufw   
 sudo ufw enable   
 sudo ufw default deny  
 以上三条命令已经足够安全了，如果你需要开放某些服务，再使用sudo ufw allow开启。  
-  
+
 补充：  
 开启/关闭防火墙 (默认设置是’disable’)  
 #ufw enable|disable  
-  
+
 转换日志状态  
 #ufw logging on|off  
-  
+
 设置默认策略 (比如 “mostly open” vs “mostly closed”)  
 #ufw default allow|deny  
-  
+
 许可或者屏蔽某些入埠的包 (可以在“status” 中查看到服务列表［见后文］)。可以用“协议：端口”的方式指定一个存在于/etc/services中的服务名称，也可以通过包的meta-data。 ‘allow’ 参数将把条目加入 /etc/ufw/maps ，而 ‘deny’ 则相反。基本语法如下：  
 #ufw allow|deny [service]  
-  
+
 显示防火墙和端口的侦听状态，参见 /var/lib/ufw/maps。括号中的数字将不会被显示出来。  
 #ufw status  
-  
+
 ［注意：上文中虽然没有使用 sudo，但是命令提示符号都是“#”］  
-  
+
 UFW 使用范例：  
 允许 53 端口  
 $ sudo ufw allow 53  
-  
+
 禁用 53 端口  
 $ sudo ufw delete allow 53  
-  
+
 允许 80 端口  
 $ sudo ufw allow 80/tcp  
-  
+
 禁用 80 端口  
 $ sudo ufw delete allow 80/tcp  
-  
+
 允许 smtp 端口  
 $ sudo ufw allow smtp  
-  
+
 删除 smtp 端口的许可  
 $ sudo ufw delete allow smtp  
-  
+
 允许某特定 IP  
 $ sudo ufw allow from 192.168.254.254  
-  
+
 删除上面的规则  
 $ sudo ufw delete allow from 192.168.254.254  
-  
+
 而对于uboot 可以直接关闭防火墙，或者允许指定IP  
 ```  
-  
+
 **搭建NFS服务器**  
 ```shell  
 1. 安装nfs服务：  
     $ sudo apt-get install nfs-kernel-server  
-  
+
 2. 修改配置文件： /etx/exports  
     在配置最后加上：  
     /home/administrator/share/nfsRootfs *(insecure, rw, sync, no_subtree_check, all_squash, anonuid=1000, anongid=1000)  
     其中 anonuid 为用户 udi ，anongid 为用户 gid  
-  
+
 3. 重启 nfs-ernel-server 服务  
-  
+
 4. 客户端：查看指定IP的nfs共享目录： $ showmount -e <serverIP>  
     挂载：$ sudo mount <serverIP>:/path/to/share/   <localDir>  
-  
+
 5. windows 挂载 nfs  
     1）控制面板->程序->程序和功能->打开或关闭windows功能  
     2）勾选nfs服务及相关子项  
     3）进入cmd执行：mount \\<serverIP>\path\to\share  x:  
     其中 x 为一个挂载点，选择一个闲置的盘符即可  
-  
+
 windows设置文件共享：  
     <1>右击网络->属性->更改高级共享设置    启用相关网络范围内的网络发现  
     <2>选择需要共享的文件夹右击->共享->共享->选择一个用户，如果有可以选择 Guest  
@@ -3038,7 +3117,7 @@ windows设置文件共享：
     <3>使用：打开我的电脑，在地址栏输入 \\<serverIP>\  
     注意：第一次登陆需要使用服务端的用户账号和密码  
 ```  
-  
+
 **构建部署kernel、设备树、根文件系统**  
 ```shell  
 这里以buildroot和 udoo-neo-full为例简要说明  
@@ -3046,11 +3125,11 @@ git://git.busybox.net/buildroot
 make list-defconfigs | grep udoo  
 make mx6sx_udoo_neo_defconfig  
 make all  
-  
+
 将 output/image 路径下的 zImage 和 设备树 放到 tftp 共享路径下  
 将 output/image 路径下的根文件系统解压到 nfs 共享目录下  
 ```  
-  
+
 **修改uboot环境变量**  
 ```shell  
 通常需要修改 serverip、ipaddr、image(kernel)、fdt_file(dtb)、nfsroot(rootfs) 这几个变量  
@@ -3063,48 +3142,48 @@ nfsroot=/home/administrator/share/nfsRootfs
 ```  
 以下为配置之后的参数：  
 ![](./Embedded_dev_notes.pic/Picture22.png)  
-  
+
 **网络启动**  
 一般boot里会设置网络启动的参数，直接通过run命令执行即可，例如： run netboot  
 此时使用的参数为：  
 ```shell  
 netargs=setenv bootargs console=${console},${baudrate} root=/dev/nfs ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp  
 ```  
-  
+
 ## u-boot编译架构  
 待完善  
 ## 源码分析  
 ### 链接脚本（lds文件）  
-  
+
 lds文件：https://www.jianshu.com/p/ec39403db315  
 https://www.jianshu.com/p/42823b3b7c8e  
 https://blog.csdn.net/u010833290/article/details/8991585  
-  
+
 https://www.zhihu.com/question/36860638  
 ▲ https://insidelinuxdev.net/article/a00r78.html  
 http://ftp.gnu.org/old-gnu/Manuals/ld-2.9.1/html_mono/ld.html  
 http://www.gnu.org/software/make/manual/make.html  
-  
+
 每一个链接都是链接脚本（linker script）控制的，脚本是按照链接器命令语言（linker command language）书写的。  
-  
+
 链接脚本的主要目的是描述输入文件的section如何映射到输出文件，以及如何控制输出文件的内存布局。除此之外，大多数链接脚本不做什么其它的事。然而如果需要，链接脚本也可以指导链接器执行其它许多操作。  
-  
+
 链接器总是使用链接脚本，如果没有提供，它使用缺省脚本，使用--verbose命令行选项，可以显示缺省的链接脚本。一些命令如-r或者-N，会影响缺省链接脚本。  
-  
+
 可以使用-T选项指定自己的链接脚本，这么做时，你的脚本完全替换缺省链接脚本。  
-  
+
 **基本的链接脚本概念：**  
 section：可参考本博客ELF分类中的文章。  
 input section：输入文件中的section。  
 output section：输出文件中的section。  
 loadable：当输出文件运行时，该section的内容加载内存中。  
 allocatable：该section没有内容，但是会分配内存，通常是.bss section。  
-  
+
 每个可加载和可分配section有两个地址，第一个是VMA（virtual memory address），这是输出文件运行时，section的地址。第二个是LMA（load memory address），这是section要加载到的地址。大多数情况下，这两个地址相同。但是在一些嵌入式系统中，整个目标文件烧写到nor flash（指令可直接执行），只读段仍然在ROM中，但是变量加载到RAM中，此时VMA和LMA不同。  
-  
+
 **链接脚本格式：**  
 链接脚本是文本文件，链接脚本由一系列命令组成。每一个命令或者是一个关键字，关键字可以带参数；或者是给符号赋值。可以用分号分开各个命令。注释的格式为 /* */。文件名和格式名可直接输入，如果有特殊字符，使用双引号。  
-  
+
 **简单的链接脚本例子：**  
 最简单的链接脚本只有一个命令："SECTIONS"，这个命令用来描述输出文件的内存布局。  
 ```shell  
@@ -3118,7 +3197,7 @@ SECTIONS
 }  
 ```  
 "."符号是location counter，用于指定section的地址，SECTIONS命令开始时，其值为0，可以显式设置，如果没有设置，则按照section大小自动增长。.text定义一个ouput section。后面跟一个冒号，现在可以省略。大括号用来指定input sections，*是通配符，匹配任何文件名。表达式'*(.text)'表示输入文件的所有.text section。链接器保证output section满足对齐要求  
-  
+
 **ENTRY命令**  
 程序执行的第一条指令叫做entry point。ENTRY命令用于设置入口点。链接器按照下面的顺序寻找入口点。  
 1. -e 命令行选项。  
@@ -3126,7 +3205,7 @@ SECTIONS
 3. 目标指定的符号，通常是start。  
 4. .text的第一个字节。  
 5. 0  
-  
+
 **SECTIONS命令**  
 SECTIONS命令告诉链接器，如何映射输入section到输出section，如何将输出section放到内存。SECTIONS命令的格式：  
 ```shell  
@@ -3145,7 +3224,7 @@ SECTIONS
 ENTRY命令和符号赋值允许出现在SECTIONS命令中，是为了在这些命令中方便的使用location counter。这也使链接脚本更容易理解，因为你将这些命令放在输出文件布局中有意义的位置。  
 如果在链接脚本中，没有使用SECTIONS命令。链接器将每一个输入section放入一个唯一命名的输出section。按照其在第一个输入文件的顺序。当然也会合并输入section。第一个section的地址将为0。  
 其他更详细的信息、命令、学习资料参考： https://insidelinuxdev.net/article/a00r78.html  
-  
+
 一段典型脚本：（hello.lds）  
 ```shell  
 ENTRY(helloworld)  
@@ -3167,9 +3246,9 @@ SECTIONS
         *(.bss);  
     }  
 }     
-  
+
 ----------------------------------  
-  
+
 1、点号(.)：  
     点号在SECTIONS命令里称为位置计数器，代表了当前位置。如上面的0x20008000表示代码段的起始位置从这个值开始。  
     也可以不指定，如.data段和.bss段；代表紧挨着上面的段分布。如果一开始就不指定，则默认值为0。  
@@ -3188,12 +3267,12 @@ SECTIONS
     3、如果定义了start符号，使用start符号值；  
     4、如果存在.text section，使用.text section的第一字节的位置值；  
     5、使用值0；  
-  
+
 -----------------------------------  
 使用：(运行链接命令时，借助于-T参数）  
     arm-linux-ld -T hello.lds -o file.eld  
 ```  
-  
+
 **u-boot入口：**  
 https://blog.csdn.net/weixin_43288201/article/details/107496580  
 https://zhuanlan.zhihu.com/p/132479321  
@@ -3202,7 +3281,7 @@ https://blog.csdn.net/newnewman80/article/details/9948509
 根据编译后的u-boot根目录下的u-boot.lds文件可以看到  
 入口点是 arch/arm/lib/vectors.S 文件中的_start --- 中断向量表 然后跳转到  
 arch/arm/cpu/armv7/start.S 里面的reset函数  
-  
+
 ### 基本汇编语法  
 https://www.crifan.com/files/doc/docbook/uboot_starts_analysis/release/htmls/summary_assembly.html  
 1.汇编中的标号=C中的标号  
@@ -3215,7 +3294,7 @@ reset:
     mrs	r0,cpsr  
 ```  
 中的reset，就是汇编中的标号，相对来说，比较容易理解，就相当于C语言的标号。  
-  
+
 比如，C语言中定义一个标号ERR_NODEV：  
 ```shell  
 ERR_NODEV: /* no device error */  
@@ -3226,35 +3305,35 @@ ERR_NODEV: /* no device error */
 if (something)  
 goto ERR_NODEV ;  
 ```  
-  
+
 2.汇编中的跳转指令=C中的goto  
 对应地，和上面的例子中的C语言中的编号和掉转到标号的goto类似，汇编中，对于定义了标号，那么也会有对应的指令，去跳转到对应的汇编中的标号。这些跳转的指令，就是b指令，b是branch的缩写。  
-  
+
 b指令的格式是：  
 `b{cond} label`  
 简单说就是跳转到label处。  
-  
+
 用和上面的例子相关的代码来举例：  
 ```shell  
 .globl _start  
 _start:	b       reset  
 ```  
 就是用b指令跳转到上面那个reset的标号。  
-  
-  
+
+
 3.汇编中的.globl=C语言中的extern  
 对于上面例子中：  
 `.globl _start`  
 中的.global，就是声明_start为全局变量/标号，可以供其他源文件所访问。  
-  
+
 即汇编器，在编译此汇编代码的时候，会将此变量记下来，知道其是个全局变量，遇到其他文件是用到此变量的的时候，知道是访问这个全局变量的。  
 因此，从功能上来说，就相当于C语言用extern去生命一个变量，以实现本文件外部访问此变量。  
-  
+
 4.汇编中用bl指令和mov pc，lr来实现子函数调用和返回  
 和b指令类似的，另外还有一个bl指令，语法是：  
 `bl{cond} label`  
 其作用是，除了b指令跳转到label之外，在跳转之前，先把下一条指令地址存到lr寄存器中，以方便跳转到那边执行完毕后，将lr再赋值给pc，以实现函数返回，继续执行下面的指令的效果。  
-  
+
 用下面这个start.S中的例子来说明：  
 ```shell  
     bl	cpu_init_crit  
@@ -3268,19 +3347,19 @@ cpu_init_crit:
 ......  
 cpu_init_crit();  
 ......  
-  
+
 void cpu_init_crit(void)  
 {  
 ......  
 }  
 ```  
 而关于C语言中，函数的跳转前后所要做的事情，都是C语言编译器帮我们实现好了，会将此C语言中的函数调用，转化为对应的汇编代码的。  
-  
+
 其中，此处所说的，函数跳转前后所要做的事情，就是：  
 函数跳转前，要将当前指令的下一条指令的地址，保存到lr寄存器中  
 函数调用完毕后，将之前保存的lr的值给pc，实现函数跳转回来。继续执行下一条指令。  
 而如果你本身自己写汇编语言的话，那么这些函数跳转前后要做的事情，都是你程序员自己要关心，要实现的事情。  
-  
+
 5.汇编中的对应位置有存储值的标号 = C语言中的指针变量  
 像前文所解析的代码中类似于这样的：  
 `LABEL1：.word Value2`  
@@ -3291,7 +3370,7 @@ _TEXT_BASE:
 ```  
 所对应的含义是，有一个标号_TEXT_BASE  
 而该标号中对应的位置，所存放的是一个word的值，具体的数值是TEXT_BASE，此处的TEXT_BASE是在别处定义的一个宏，值是0x33D00000。  
-  
+
 所以，即为：  
 有一个标号_TEXT_BASE，其对应的位置中，所存放的是一个word的值，值为  
 TEXT_BASE=0x33D00000  
@@ -3299,7 +3378,7 @@ TEXT_BASE=0x33D00000
 `int *_TEXT_BASE = TEXT_BASE = 0x33D00000`  
 即：  
 `int *_TEXT_BASE = 0x33D00000`  
-  
+
 **C语言中如何引用汇编中的标号**  
 不过，对于这样的类似于C语言中的指针的汇编中的标号，在C语言中调用到的话，却是这样引用的：  
 ```shell  
@@ -3321,7 +3400,7 @@ _armboot_start:
     .word _start  
 ```  
 所以，针对这点，还是需要注意一下的。至少以后如果自己写代码的时候，在C语言中引用汇编中的global的标号的时候，知道是如何引用该变量的。  
-  
+
 【总结】  
 汇编中类似这样的代码：  
 `label1: .word value2`  
@@ -3330,7 +3409,7 @@ _armboot_start:
 但是在C语言中引用该标号/变量的时候，却是直接拿来用的，就像这样：  
 `label1 = other_value`  
 其中label1就是个int型的变量。  
-  
+
 6.汇编中的ldr+标号，来实现C中的函数调用  
 接着上面的内容，继续解释，对于汇编中这样的代码：  
 第一种：  
@@ -3350,16 +3429,16 @@ ldr pc, 标号1
 标号1：.word XXX（C语言中某个函数的函数名）  
 ```  
 这里意思就是，将地址为标号1中内容载入到pc中。而地址为标号1中的内容，就类似第一种的标号2。  
-  
+
 所以上面第一种的意思：就很容易看出来，就是把标号2这个地址值，给pc，即实现了跳转到标号2的位置执行代码，就相当于调用一个函数，该函数名为标号2。  
-  
+
 第二种的意思，和上面类似，是将C语言中某个函数的函数名，即某个地址值，给pc，实现调用C中对应的那个函数。  
-  
+
 两种做法，其含义用C语言表达，其实很简单：  
 `PC = *（标号1） = 标号2`  
-  
+
 例：汇编中的ldr加标号实现函数调用 示例  
-  
+
 第一种：  
 ```shell  
 ......  
@@ -3373,7 +3452,7 @@ software_interrupt:
     bl 	do_software_interrupt  
 ```  
 以上就是实现了将标号1，_software_interrupt，对应的位置中的值，标号2，software_interrupt，给pc，即实现了将pc掉转到software_interrupt的位置，即实现了调用函数software_interrupt的效果。  
-  
+
 第二种：  
 ```shell  
     ldr	pc, _start_armboot  
@@ -3381,10 +3460,10 @@ _start_armboot:	.word start_armboot
 ```  
 含义就是，将标号1，_start_armboot，所对应的位置中的值，start_armboot给pc，即实现了调用函数start_armboot的目的。  
 其中，start_armboot是C语言文件中某个C语言的函数。  
-  
+
 [注意]	总结汇编中实现函数调用的方式  
 汇编中，实现函数调用的效果，有如下两种方法：  
-  
+
 方法1  
 ```shell  
 ldr pc, 标号1  
@@ -3401,7 +3480,7 @@ ldr pc, 标号1
 ......  
 标号1：.word XXX（C语言中某个函数的函数名）  
 ```  
-  
+
 7.汇编中设置某个寄存器的值或给某个地址赋值  
 在汇编代码start.S中，看到不止一处， 类似于这样的代码：  
 形式1：  
@@ -3421,7 +3500,7 @@ ldr pc, 标号1
     str	r1, [r0]  
 ```      
 其含义，都是将某个值，赋给某个地址，此处的地址，是用宏定义来定义的，对应着某个寄存器的地址。  
-  
+
 其中，形式1是直接通过mov指令来将0这个值赋给r1寄存器，和形式2中的通过ldr伪指令来将0x3ff赋给r1寄存器，两者区别是，前者是因为已经确定所要赋的值0x0是mov的有效操作数，而后者对于0x3ff不确定是否是mov的有效操作数，如果不是，则该指令无效，编译的时候，也无法通过编译，会出现类似于这样的错误：  
 ```shell  
     start.S: Assembler messages:  
@@ -3451,7 +3530,7 @@ ldr	r1, =0x7fff
 33d00480:	00007fff 	.word	0x00007fff  
 ```  
 即把ldr伪指令翻译成真正的ldr指令，并且另外分配了一个word的地址空间用于存放该数值，然后用ldr指令将对应地址中的值载入，赋值给r1寄存器。  
-  
+
 总结汇编中给某个地址赋值的方法  
 汇编中，一个常用的，用来给某个地址赋值的方法，类似如下形式：  
 ```shell  
@@ -3461,20 +3540,20 @@ ldr	r1, =要赋的值
 ldr	r0, =宏的名字  
 str	r1, [r0]  
 ```  
-  
+
 ### 复位之后函数调用流程  
-  
+
 **关键文件：**  
 u-boot/arch/arm/cpu/armv7/start.S    第一阶段文件  
 u-boot/arch/arm/cpu/armv7/lowlevel_init.S    第一阶段文件  
 u-boot/arch/arm/lib/crt0.S  第二阶段文件  
 u-boot/common/board_f.c  
 u-boot/common/board_r.c  
-  
+
 **重要变量：**  
 global_data   gd_t   u-boot/include/asm-generic/global_data.h  
 保存很多有用信息的全局结构体－－gd_t（global data缩写），其中包括了bd变量，可以说gd_t结构体包括了u-boot中所有重要全局变量。  
-  
+
 **代码段、数据段：**  
 一个程序本质上都是由 bss段、data段、text段（代码段）三个组成的。这在当前的计算机程序设计中是很重要的一个基本概念。在嵌入式系统的设计中也非常重要，牵涉到嵌入式系统运行时的内存大小分配，存储单元占用空间大小的问题。  
 **bss段**：在采用段式内存管理的架构中（比如x86系统），bss段通常是指用来存放程序中未初始化的全局变量的一块内存区域，一般在初始化时bss 段部分将会清零。bss段属于静态内存分配，即程序一开始就将其清零了。比如，在C语言之类的程序编译完成之后，已初始化的全局变量保存在.data 段中，未初始化的全局变量保存在.bss 段中。text和data段都在可执行文件，或镜像文件等，由系统从执行文件中加载，而bss段不在可执行文件中，由系统初始化。  
@@ -3483,9 +3562,9 @@ global_data   gd_t   u-boot/include/asm-generic/global_data.h
 在嵌入式系统中，如果处理器是带MMU（MemoryManagement Unit，内存管理单元），  
 那么当我们的可执行程序被加载到内存以后，通常都会将.text段所在的内存空间设置为只读，以保护.text中的代码不会被意外的改写（比如在程序出错时）。当然，如果没有MMU就无法获得这种代码保护功能。  
 **data段**: 用于存放在编译阶段(而非运行时)就能确定的数据，可读可写。也是通常所说的静态存储区，赋了初值的全局变量、常量和静态变量都存放在这个域。  
-  
+
 包含有代码的可执行程序至少有一个段，通常称为 .text。在 .data 段包含数据。可执行代码保存在 .text 段，读写 .data 段中的数据。此外，只读常数保存在 .rodata 段。 初始化为零的数据保存在 .bss 段。以 bss 段起始块定义了没有初始化的静态数据空间。  
-  
+
 **函数调用流程：**  
 ```shell  
 .globl  reset    u-boot/arch/arm/cpu/armv7/start.S  
@@ -3540,22 +3619,22 @@ global_data   gd_t   u-boot/include/asm-generic/global_data.h
                   --> main_loop    u-boot/common/main.c  
                       控制台命令操作体现在这里  
 ```  
-  
+
 ### uboot启动过程分析  
 https://www.cnblogs.com/linfeng-learning/p/9284060.html  
 重要 https://blog.csdn.net/qq_16933601/article/details/106244510  嵌入式Linux应用开发完全手册  
 https://zhuanlan.zhihu.com/p/65853967  
 https://www.linuxidc.com/Linux/2017-02/141019.htm  
-  
+
 U-Boot的启动过程分为两个阶段：  
 第一阶段：主要是对处理器的内部资源的初始化(如时钟、串口)、内存(ddr)初始化，并进行 uboot 的重定位，板级的初始化比较少，所以移植的修改量比较小。此阶段由汇编语言编写，代码主体分布在start.S和lowlevel_init.S中。  
 第二阶段：主要是板级的初始化，对处理器的外部资源(iNand、网卡芯片…)、uboot环境(uboot命令、环境变量..)等初始化，并等待命令输入，SOC内部的初始化比较少，移植的修改量主要在此。此阶段由c语言编写，代码主体分布在/uboot/lib_arm/board.c中。  
-  
+
 正常情况下，在 uboot 的初始化工作完毕后，会启动内核，在启动内核后结束 uboot 程序。  
-  
+
 但是用户可以阻止 uboot 的结束，进入 uboot 的命令行模式，就是一个 uboot 中的死循环；uboot 在死循环中不断接受命令、解析命令、执行命令  
-  
-  
+
+
 uboot启动流程如下（该流程作为参看，以实际代码为准，如2.4.2的调用流程）:  
 1)设置CPU为管理模式  
 2)关看门狗  
@@ -3566,11 +3645,11 @@ uboot启动流程如下（该流程作为参看，以实际代码为准，如2.4
 7)重定位 复制uboot,然后修改SDRAM上的uboot链接地址)  
 8)清bss  
 9)跳转到board_init_r()函数,启动流程结束  
-  
-  
+
+
 另一个可参考的启动流程：红色字体部分和板级关系较大，是移植的重点修改部分。  
 ![](./Embedded_dev_notes.pic/Picture24.png)  
-  
+
 ## u-boot 移植  
 # 第四章 Linux内核  
 ## 架构介绍  
@@ -3594,5 +3673,6 @@ make list-defconfigs | grep udoo
 make mx6sx_udoo_neo_defconfig  
 make all  
 # 第八章 yocto构建Linux系统  
-  
-  
+
+
+
