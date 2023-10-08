@@ -944,6 +944,25 @@ info terminal 用于显示程序用到的终端模式
     set var $<regName>=<regVal>  
     ```  
 
+11. gef 插件
+    github: https://github.com/hugsy/gef
+
+    ![](./Embedded_dev_notes.pic/Picture37.png)
+
+    **寄存器：**
+    * 冒号左边是寄存器的名字
+    * 冒号右边是寄存器的值，再向右箭头后边是寄存器的值翻译得到的结果，
+      例如：如果是字符串会解析出字符串的内容
+
+    **栈：**
+    * 竖线左边是当前堆栈的地址
+    * `$rsp`是栈帧指针寄存器，指向栈顶
+    * 竖线右边`+`号之后是当前地址相对于栈顶的偏移
+    * 冒号右边是当前栈地址存放的内容
+
+    **code：**
+    * 注意该区域写的偏移是十进制的，例如：main+49，这里的49是十进制
+
 #### GDB交叉编译
 
 下载gdb源码：`https://sourceware.org/pub/gdb/releases/?C=M;O=D`
