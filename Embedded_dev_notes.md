@@ -630,30 +630,70 @@ minicom的精简版
 #### GDB基本用法  
 **基本指令：参考宋宝华的书**  
 编译需要添加参数-g  
-1. 启动  
-```shell  
-$ gdb <app>  
-$ (gdb) file <app>  
-attach:  
-$ sudo gdb <app> -p <pid>  
-$ (gdb) file <app>  
-$ (gdb) attach <pid >  
-运行参数处理：  
-1)进入gdb之前设置：gdb --args <app> <paras>  
-2)进入gdb之后设置：set args <paras>  
-3)进入gdb后，运行时设置：r <paras>  
-4)--batch 在处理完所有用“-x”指定的命令文件后以状态 0 退出。 如果在命令文件中执行 GDB 命令时发生错误，则以非零状态退出。例如：  
-gdb -ex=r --batch --args <paras>   其中 r 是 run的简写  
-5)使用command文件  
-进入gdb之前：  
-gdb --command=<commandfile.gdb> [--batch] --args <app> [<paras>]  
-进入gdb之后：  
-source <commandfile.gdb>  
-commandfile的编写按照命令行敲命令的顺序即可  
-6) show user  
-  查看当前用户使用的命令等相关信息  
-注意：无论在哪里设置参数，只要设置完就可以直接使用r运行，默认带有参数，除非另作修改更新，才会使用新的参数  
-```  
+1. 启动
+```shell
+$ gdb <app>
+$ (gdb) file <app>
+$ (gdb) info files
+attach:
+$ sudo gdb <app> -p <pid>
+$ (gdb) file <app>
+$ (gdb) attach <pid >
+
+设置运行环境根目录:
+$ (gdb) preinstall
+
+运行参数处理：
+1)进入gdb之前设置：gdb --args <app> <paras>
+2)进入gdb之后设置：set args <paras>
+3)进入gdb后，运行时设置：r <paras>
+4)--batch 在处理完所有用“-x”指定的命令文件后以状态 0 退出。 如果在命令文件中执行 GDB 命令时发生错误，则以非零状态退出。例如：
+gdb -ex=r --batch --args <paras>   其中 r 是 run的简写
+5)使用command文件
+进入gdb之前：
+gdb --command=<commandfile.gdb> [--batch] --args <app> [<paras>]
+进入gdb之后：
+source <commandfile.gdb>
+commandfile的编写按照命令行敲命令的顺序即可
+6) show user
+  查看当前用户使用的命令等相关信息
+注意：无论在哪里设置参数，只要设置完就可以直接使用r运行，默认带有参数，除非另作修改更新，才会使用新的参数
+
+当前工作目录：
+$ (gdb) pwd
+$ (gdb) cd <new/dir>
+
+
+GDB动态库搜索路径
+参考：
+[set sysroot command](https://visualgdb.com/gdbreference/commands/set_sysroot)
+[GDB动态库搜索路径](https://www.cnblogs.com/tibetanmastiff/p/4759995.html)
+[GDB：无法找到动态链接器断点函数](https://www.fayewilliams.com/2013/01/31/gdb-unable-to-find-dynamic-linker-breakpoint-function/)
+
+当GDB无法显示so动态库的信息或者显示信息有误时，通常是由于库搜索路径错误导致的，
+可使用set sysroot、set solib-absolute-prefix、set solib-search-path来指定库搜索路径。
+1. sysroot 与 solib-absolute-prefix 相同，sysroot是solib-absolute-prefix 的别名。
+2. set solib-search-path设置动态库的搜索路径，该命令可设置多个搜索路径，路径之间
+   使用“:”隔开（在linux中为冒号，DOS和Win32中为分号）。
+3. set solib-absolute-prefix 与 set solib-search-path 的区别：
+  总体上来说solib-absolute-prefix设置库的绝对路径前缀，只对绝对路径有效；而solib
+  -search-path设置库的搜索路径，对绝对路径和相对路径均起作用。（编译器自动链接的
+  so库多采用绝对路径）。
+详细规则有：
+set solib-search-path由于是路径前缀，所以只能设置一个路径，而solib-search-path
+可以设置多个搜索路径。
+举例：
+# 设置本地的sysroot：
+$ (gdb) set sysroot preinstall
+# 设置远程的sysroot，（之前关键字可以使用remote，但后来弃用建议使用target）：
+$ (gdb) set sysroot target:/
+# 设置搜索路径
+$ (gdb) set solib-search-path /vendor/lib:/system/lib
+# 手动加载动态库
+$ (gdb) load /path/to/lib.so
+# 查看加载的动态库，如果没有运行到需要动态库的位置可能也查询不到，需要用到动态库才会看到加载信息：
+$ (gdb) info sharedlibrary
+```
 
 2. 列出代码  
 ```shell  
@@ -664,7 +704,7 @@ $(gdb)  show listsize  # 显示现在 list 显示的行数
 $(gdb)  set listsize <num> # 修改 list 显示的行数  
 $(gdb)  tui enable    # 使用独立的代码窗口  
 $(gdb)  layout src    # 使用独立的代码窗口  
-$(gdb)  layout asm    # 使用独立的代码窗口，汇编语言  
+$(gdb)  layout asm    # 使用独立的代码窗口，汇编语言
 
 layout的使用：  
 layout：用于分割窗口，可以一边查看代码，一边测试。主要有以下几种用法：  
