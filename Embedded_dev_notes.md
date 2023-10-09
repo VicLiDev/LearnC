@@ -613,6 +613,42 @@ arm-linux-gnueabi-objdump
 
 ## 工具  
 
+### vim
+
+#### 基本操作
+
+vim复制到系统剪贴板
+{Visual}"+y - copy the selected text into the system clipboard
+
+vim剪切到系统剪贴板
+"+dd – 剪切一行
+
+从系统剪贴板粘贴到vim
+"*p
+"+p
+Shift+Insert
+:put + - Ex command puts contents of system clipboard on a new line
+<C-r>+ - From insert mode (or commandline mode)
+"+p比 Ctrl-v 命令更好，它可以更快更可靠地处理大块文本的粘贴，也能够避免粘贴大量文本时，发生每行行首的自动缩进累积，因为Ctrl-v是通过系统缓存的stream处理，一行一行地处理粘贴的文本。
+
+#### 在Vim中插入当前文件名
+reference: https://www.cnblogs.com/Mr-Shadow/archive/2013/03/12/2954919.html
+1. 使用<c-r>（即CTRL+R）。步骤如下：
+在Insert模式下，先按CTRL+R，光标处变成双引号“
+再按%，即可直接插入当前文件名（含路径）
+关 于<c-r>，可输入”:help <c-r>“查看详细说明。此处简要说明一下，CTRL-R可以插入0～9号寄存器（numbered register）内的内容，也可以插入特殊寄存器（named register）里的内容。特殊寄存器中，只读寄存器"%包含的就是当前文件名。另外，vim中的复制粘贴（剪贴板操作）也是使用了特殊寄存器+的操作。
+
+2. 使用expand()。其实这个也用到了<c-r>。步骤如下：
+在Insert模式下，先按CTRL+R，光标处变成双引号”
+再按=，提示输入表达式
+输入expand("%:t")，回车
+即可插入当前文件名（不含路径）
+这个方法先进入<c-r>状态，然后利用"=寄存器，将表达式的值插入当前位置。基本上只要是可以返回字符串的表达式都可以用这个方法快速插入到文本中。可以将整个输入过程做map或abbreviation，实现快速插入当前文件名，比如：
+:iab fname <c-r>=expand("%:t")<CR>
+
+只要在输入状态下输入“fname空格”即可插入当前文件名。
+关于expand()，可输入“:help expand”查看详细说明。
+
 ### linux 串口工具  
 #### minicom  
 minicom -s  修改设置，包括预置场景  
