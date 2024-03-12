@@ -1,22 +1,32 @@
-// pthread_cond_timedwait()函数有三个入口参数：
-// (1)pthread_cond_t __cond：条件变量（触发条件）
-// (2)pthread_mutex_t __mutex: 互斥锁
-// (3)struct timespec __abstime: 等待时间（其值为系统时间 + 等待时间)
-// 当在指定时间内有信号传过来时，pthread_cond_timedwait()返回0，否则返回一个非0数（我没有找到返回值的定义)，
-// 等待时间最长是设定的值，如果信号提前到达了，就会立刻返回，不需要等到设定时间，如果信号一直没有达到会在达到设定时间后返回一个非零数
-//                               
-//                               
-// 在使用pthread_cond_timedwait()函数时，必须有三步：
-// 1：加互斥锁：pthread_mutex_lock(&__mutex)
-// 2：等待：pthread_cond_timedwait(&__cond, &__mutex, &__abstime)   //解锁->等待->加锁
-// 3：解互斥锁：pthread_mutex_unlock(&__mutex)
-// 
-// 
-// 发送信号量时，也要有三步：
-// 1：加互斥锁：pthread_mutex_lock(&__mutex)
-// 2：发送：pthread_cond_signal(&__cond)
-// 3：解互斥锁：pthread_mutex_unlock(&__mutex)
+/*************************************************************************
+    > File Name: 2.2.thread_cond_wait_time.c
+    > Author: LiHongjin
+    > Mail: 872648180@qq.com
+    > Created Time: 2024年03月12日 星期二 22时28分07秒
+ ************************************************************************/
 
+/*
+ * pthread_cond_timedwait()函数有三个入口参数：
+ * (1)pthread_cond_t __cond：条件变量（触发条件）
+ * (2)pthread_mutex_t __mutex: 互斥锁
+ * (3)struct timespec __abstime: 等待时间（其值为系统时间 + 等待时间)
+ * 当在指定时间内有信号传过来时，pthread_cond_timedwait()返回0，否则返回一个非0数，
+ * 等待时间最长是设定的值，如果信号提前到达了，就会立刻返回，不需要等到设定时间，
+ * 如果信号一直没有达到会在达到设定时间后返回一个非零数
+ *
+ *
+ * 在使用pthread_cond_timedwait()函数时，必须有三步：
+ * 1：加互斥锁：pthread_mutex_lock(&__mutex)
+ * 2：等待：pthread_cond_timedwait(&__cond, &__mutex, &__abstime) //解锁->等待->加锁
+ * 3：解互斥锁：pthread_mutex_unlock(&__mutex)
+ *
+ *
+ * 发送信号量时，也要有三步：
+ * 1：加互斥锁：pthread_mutex_lock(&__mutex)
+ * 2：发送：pthread_cond_signal(&__cond)
+ * 3：解互斥锁：pthread_mutex_unlock(&__mutex)
+ *
+ */
 
 
 
@@ -26,16 +36,16 @@
 #include <unistd.h>
 #include <semaphore.h>
 #include <sys/time.h>
- 
-#define SENDSIGTIME 10
- 
+
+#define SENDSIGTIME 3
+
 pthread_cond_t g_cond;
 pthread_mutex_t g_mutex;
- 
+
 void thread1(void *arg)
 {
 
-    int inArg = (int)arg;
+    (void)arg;
     int ret = 0;
     struct timeval now;
     struct timespec outtime;
@@ -71,9 +81,9 @@ int main(void)
         return 1;
     }
 
-    printf("等待%ds发送信号!\n", SENDSIGTIME);
+    printf("wait signal, %ds!\n", SENDSIGTIME);
     sleep(SENDSIGTIME);
-    printf("正在发送信号....\n");
+    printf("sending signal...\n");
     pthread_mutex_lock(&g_mutex);
     pthread_cond_signal(&g_cond);
     pthread_mutex_unlock(&g_mutex);
