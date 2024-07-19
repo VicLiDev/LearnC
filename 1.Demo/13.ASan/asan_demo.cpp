@@ -13,12 +13,13 @@ int main()
     std::vector<int> vec = {1, 2, 3};
 
     // 故意越界访问
-    std::cout << "Element at index 3: " << vec[3] << std::endl;
+    std::cout << "Out-of-bounds access index 3: " << vec[3] << std::endl;
 
     // 创建一个野指针
     int *ptr = new int[3];
     delete[] ptr;
-    std::cout << "Dereferencing freed memory: " << *ptr << std::endl; // 这将是一个错误
+    // 访问野指针
+    std::cout << "Accessing wild pointers: " << *ptr << std::endl;
 
     return 0;
 }
