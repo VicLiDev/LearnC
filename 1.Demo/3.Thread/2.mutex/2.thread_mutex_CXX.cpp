@@ -156,8 +156,8 @@ namespace thread_lock {
 
 int main() {
     thread_lock::Test1();
-    // thread_lock::Test2();
-    // thread_lock::Test3();
+    thread_lock::Test2();
+    thread_lock::Test3();
 
     return 0;
 }

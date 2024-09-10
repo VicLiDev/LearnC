@@ -17,7 +17,7 @@ int main ()
 		/* 将读取端连接到标准输入*/
 		dup2 (fds[0], STDIN_FILENO);
 		/* 用 sort 替换子进程。*/
-		execlp ("sort", "sort", 0);
+		execlp ("sort", "sort", NULL);
 	}
 	else {
 		/* 这是父进程。*/

@@ -120,8 +120,8 @@ int main()
     pthread_join(tid1, &retval_1);
     pthread_join(tid2, &retval_2);
 
-    printf(" thread 1 retval is  %ls \n", (int*)retval_1);
-    printf(" thread 2 retval is  %ls \n", (int*)retval_2);
+    printf(" thread 1 retval is  %p \n", (int*)retval_1);
+    printf(" thread 2 retval is  %p \n", (int*)retval_2);
 
     // destroy mutex
     pthread_mutex_destroy( &m_mutex ) ;
