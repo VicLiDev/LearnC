@@ -9,7 +9,7 @@
  *
  *
  * ======== int timerfd_create(int clockid, int flags);
- * 创建一个新的计时器对象，并返回引用该计时器的文件描述符。 clockid 参数指定用于标记计时器进度的时钟，并且必须是 CLOCK_REALTIME 或 CLOCK_MONOTONIC。 
+ * 创建一个新的计时器对象，并返回引用该计时器的文件描述符。 clockid 参数指定用于标记计时器进度的时钟，并且必须是 CLOCK_REALTIME 或 CLOCK_MONOTONIC。
  *      CLOCK_REALTIME  是可设置的系统范围时钟。  // 系统实时时间,随系统实时时间改变而改变,即从UTC1970-1-1 0:0:0开始计时,中间时刻如果系统时间被用户改成其他,则对应的时间相应改变。
  *      CLOCK_MONOTONIC 是一个不可设置的时钟，不受系统时钟不连续变化的影响（例如，手动更改系统时间）。  // 从系统启动这一刻起开始计时,不受系统时间被用户改变的影响
  * 可以使用 clock_gettime 从系统中检索每个时钟的当前值。
@@ -50,7 +50,7 @@
  * it_interval 字段返回定时器的间隔。 如果此结构的两个字段都为零，则计时器设置为仅在 curr_value.it_value 指定的时间到期一次。
  *
  * 用例功能说明：
- * 可执行文件文件可以指定一个或者三个参数，一个参数的情况下仅 new_value.it_value 起作用，即不会做周期循环，例如： ./a.out 3  仅等待 3s 
+ * 可执行文件文件可以指定一个或者三个参数，一个参数的情况下仅 new_value.it_value 起作用，即不会做周期循环，例如： ./a.out 3  仅等待 3s
  * 三个参数的情况下，第二个参数是周期循环的时间，第三个参数是循环的次数，例如： ./a.out 3 1 10  首先等待 3s，然后以 1s 为周期，循环10次
  *
  */
@@ -142,8 +142,8 @@ int main(int argc, char *argv[])
         tot_exp += exp;
         print_elapsed_time();
         printf("read: %llu; total=%llu\n",
-                (unsigned long long) exp,
-                (unsigned long long) tot_exp);
+               (unsigned long long) exp,
+               (unsigned long long) tot_exp);
     }
 
     exit(EXIT_SUCCESS);

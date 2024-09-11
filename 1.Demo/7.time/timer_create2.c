@@ -6,16 +6,16 @@
  *   2、setitmer 计时器时间到达时，只能使用信号方式通知使用 timer 的进程，而 POSIX timer 可以有多种通知方式，比如信号，或者启动线程。
  *   3、使用 setitimer 时，通知信号的类别不能改变：SIGALARM，SIGPROF 等，而这些都是传统信号，而不是实时信号，因此有 timer overrun 的问题；而 POSIX Timer 则可以使用实时信号。
  *   4、 setimer 的精度是 ms，POSIX Timer 是针对有实时要求的应用所设计的，接口支持 ns 级别的时钟精度。
- * 
+ *
  * //---- 创建一个定时器
  * int timer_create(clockid_t clock_id, struct sigevent *evp, timer_t *timerid)
  *
  * 进程可以通过调用 timer_create() 创建特定的定时器，定时器是每个进程自己的，不是在 fork 时继承的。参数：
  *  clock_id 说明定时器是基于哪个时钟的，*timerid 装载的是被创建的定时器的 ID。该函数创建了定时器，并将他的 ID 放入timerid指向的位置中。参数evp指定了定时器到期要产生的异步通知。
  *  如果evp为 NULL，那么定时器到期会产生默认的信号，对 CLOCK_REALTIMER来说，默认信号就是SIGALRM。如果要产生除默认信号之外的其它信号，程序必须将 evp->sigev_signo设置为期望的信号码。
- *  struct sigevent 结构中的成员 evp->sigev_notify说明了定时器到期时应该采取的行动。通常，这个成员的值为SIGEV_SIGNAL，这个值说明在定时器到期时，会产生一个信号。程序可以将成员 
+ *  struct sigevent 结构中的成员 evp->sigev_notify说明了定时器到期时应该采取的行动。通常，这个成员的值为SIGEV_SIGNAL，这个值说明在定时器到期时，会产生一个信号。程序可以将成员
  *  evp->sigev_notify设为SIGEV_NONE来防止定时器到期时产生信号。
- * 
+ *
  * clock_id取值为以下:
  * CLOCK_REALTIME :Systemwide realtime clock. //时间是系统保存的时间，即可以由 date 命令显示的时间，该时间可以重新设置。
  * CLOCK_MONOTONIC:Represents monotonic time. Cannot be set.
@@ -81,16 +81,16 @@
 #include <time.h>
 
 
- void  handle(union sigval v){
-     time_t t;
-     char p[32];
-     time(&t);
-     strftime(p, sizeof(p), "%T", localtime(&t));
-     printf("%s thread %lu, val = %d, signal captured.\n", p, pthread_self(), v.sival_int);
-     return;
- }
+void  handle(union sigval v) {
+    time_t t;
+    char p[32];
+    time(&t);
+    strftime(p, sizeof(p), "%T", localtime(&t));
+    printf("%s thread %lu, val = %d, signal captured.\n", p, pthread_self(), v.sival_int);
+    return;
+}
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
 
     struct sigevent evp;
     struct itimerspec ts;
@@ -102,7 +102,7 @@ int main(int argc, char *argv[]){
     evp.sigev_notify_function = handle;
     evp.sigev_value.sival_int = 3;   //作为handle()的参数
     ret = timer_create(CLOCK_REALTIME, &evp, &timer);
-    if( ret){
+    if( ret) {
         perror("timer_create");
     }
 

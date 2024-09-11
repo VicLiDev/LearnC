@@ -76,7 +76,7 @@
 #include <unistd.h>
 #include <pthread.h>
 
-#define CONSUMERS_COUNT 9	
+#define CONSUMERS_COUNT 9
 #define PRODUCERS_COUNT 1
 
 pthread_mutex_t g_mutex ;
@@ -91,14 +91,14 @@ void* consumer( void* arg )
     int num = *(int*)arg;
     while ( 1 ) {
         /******* critical section begin *******/
-        pthread_mutex_lock( &g_mutex ) ;
+        pthread_mutex_lock(&g_mutex ) ;
 
         // if share_variable == 0, means consumer shell stop here
         while ( share_variable == 0 ) {
             printf( "consumer %d begin wait a condition...\n", num ) ;
             // put a thread blocked ont a condition variable( here is g_cond),
             // and unlock the mutex( here is g_mutex )
-            pthread_cond_wait( &g_cond, &g_mutex ) ;
+            pthread_cond_wait(&g_cond, &g_mutex ) ;
         }
         // here means n != 0 and consumer can goes on
         // consumer consumed shared variable, so the number of shared variable shell minus
@@ -106,7 +106,7 @@ void* consumer( void* arg )
         printf( "consumer %d begin consume product\n", num ) ;
         --share_variable ;
 
-        pthread_mutex_unlock( &g_mutex ) ;
+        pthread_mutex_unlock(&g_mutex ) ;
         /******** critial section end *********/
     }
 
@@ -116,18 +116,18 @@ void* consumer( void* arg )
 void* producer( void* arg )
 {
     int num = *(int*)arg;
-    while(1){
+    while(1) {
         /******* critical section begin *******/
-        pthread_mutex_lock( &g_mutex ) ;
+        pthread_mutex_lock(&g_mutex ) ;
 
         /* produce a shared variable */
         printf( "producer %d begin produce product...\n", num ) ;
         ++share_variable ;
         printf( "producer %d end produce product...\n", num ) ;
         /* unblock threads blocked on a condition variable( here is g_cond ) */
-        pthread_cond_signal( &g_cond ) ;
+        pthread_cond_signal(&g_cond ) ;
         printf( "producer %d notified consumer by condition variable...\n", num ) ;
-        pthread_mutex_unlock( &g_mutex ) ;
+        pthread_mutex_unlock(&g_mutex ) ;
 
         /******** critial section end *********/
         sleep(1) ;
@@ -140,23 +140,23 @@ int main( void )
 {
     int loop;
     /* initiate mutex */
-    pthread_mutex_init( &g_mutex, NULL ) ;
+    pthread_mutex_init(&g_mutex, NULL ) ;
     /* initiate condition */
-    pthread_cond_init( &g_cond, NULL ) ;
+    pthread_cond_init(&g_cond, NULL ) ;
 
     /* initiate consumer threads */
-    for ( loop = 0; loop < CONSUMERS_COUNT; ++ loop ){
-        pthread_create( &g_thread[loop], NULL, consumer, (void*)&loop);
+    for ( loop = 0; loop < CONSUMERS_COUNT; ++ loop ) {
+        pthread_create(&g_thread[loop], NULL, consumer, (void*)&loop);
     }
     sleep(1);
     /* initiate producer threads */
     for (loop = CONSUMERS_COUNT; loop < CONSUMERS_COUNT + PRODUCERS_COUNT; ++ loop) {
-        pthread_create( &g_thread[loop], NULL, producer, (void*)&loop);
+        pthread_create(&g_thread[loop], NULL, producer, (void*)&loop);
     }
-    for (loop = 0; loop < CONSUMERS_COUNT + PRODUCERS_COUNT; ++ loop){
+    for (loop = 0; loop < CONSUMERS_COUNT + PRODUCERS_COUNT; ++ loop) {
         pthread_join( g_thread[loop], NULL);
     }
 
-    pthread_mutex_destroy( &g_mutex ) ;
-    pthread_cond_destroy( &g_cond ) ;
+    pthread_mutex_destroy(&g_mutex ) ;
+    pthread_cond_destroy(&g_cond ) ;
 }

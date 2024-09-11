@@ -10,11 +10,11 @@
 
 int main()
 {
-	const char *s = " 134";
-	int num = atoi(s);
+    const char *s = " 134";
+    int num = atoi(s);
 
-	printf("%d\n", num); // output: 134
+    printf("%d\n", num); // output: 134
 
-	return 0;
+    return 0;
 }
 

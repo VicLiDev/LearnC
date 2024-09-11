@@ -30,24 +30,24 @@
 int main()
 {
     pid_t pid;
-   
+
     printf("Process Creation Study\n");
     pid = fork();
     switch(pid)
     {
-       case 0:
-         printf("Child process is running,ChildPid is %d,ParentPid is %d\n",
-                            getpid(),getppid());
-         break;
-       case -1:
-         printf("Process creation failed\n");
-         break;
-       default:
-         printf("Parent process is running,ChildPid is %d,ParentPid is %d\n",
-                             pid,getpid());
+    case 0:
+        printf("Child process is running,ChildPid is %d,ParentPid is %d\n",
+               getpid(),getppid());
+        break;
+    case -1:
+        printf("Process creation failed\n");
+        break;
+    default:
+        printf("Parent process is running,ChildPid is %d,ParentPid is %d\n",
+               pid,getpid());
         break;
     }
-    exit(0); 
+    exit(0);
 
     return 0;
 }

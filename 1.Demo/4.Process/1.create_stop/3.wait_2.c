@@ -25,24 +25,24 @@ sig_atomic_t child_exit_status;
 void clean_up_child_process (int signal_number)
 {
     (void)signal_number;
-	int status;
+    int status;
 
-	/* 清理子进程。*/
-	wait (&status);
-	/* 在全局变量中存储子进程的退出代码。*/
-	child_exit_status = status;
+    /* 清理子进程。*/
+    wait (&status);
+    /* 在全局变量中存储子进程的退出代码。*/
+    child_exit_status = status;
 }
 
 int main ()
 {
-	/* 用 clean_up_child_process 函数处理 SIGCHLD。*/
-	struct sigaction sigchild_action;
+    /* 用 clean_up_child_process 函数处理 SIGCHLD。*/
+    struct sigaction sigchild_action;
 
-	memset (&sigchild_action, 0, sizeof (sigchild_action));
-	sigchild_action.sa_handler = &clean_up_child_process;
-	sigaction (SIGCHLD, &sigchild_action, NULL);
-	/* 现在进行其它工作,包括创建一个子进程。*/
-	/* ... */
+    memset (&sigchild_action, 0, sizeof (sigchild_action));
+    sigchild_action.sa_handler = &clean_up_child_process;
+    sigaction (SIGCHLD, &sigchild_action, NULL);
+    /* 现在进行其它工作,包括创建一个子进程。*/
+    /* ... */
 
-	return 0;
+    return 0;
 }

@@ -35,24 +35,24 @@ int main()
         perror("atexit");
     }
 
-    if(atexit(my_exit2)!=0){
+    if(atexit(my_exit2)!=0) {
         perror("atexit");
     }
 
-    if((pid=fork())==0){
+    if((pid=fork())==0) {
         /*
          * 子进程执行某个任务完后尽量使用exit退出，不然，若父进程中创建的子进程
          * 位于循环中，可能会引起未知的行为
          */
         printf("child pid is %d\n",getpid());
     }
-    else if(pid>0){
+    else if(pid>0) {
         sleep(10);
         glob++;
         local--;
-        printf("father pid is %d\n",getpid());       
+        printf("father pid is %d\n",getpid());
     }
-    else{
+    else {
         perror("fork");
     }
     /* 这段代码父子进程共享 */

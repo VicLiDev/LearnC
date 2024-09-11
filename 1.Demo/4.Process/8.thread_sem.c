@@ -74,7 +74,7 @@
 //
 // int sem_destroy(sem_t* __sem);
 // 销毁信号量
-// 
+//
 
 
 #include <stdio.h>

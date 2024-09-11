@@ -50,7 +50,7 @@ int main(int argc, char* const argv[])
     /* 网页服务器使用 80 端口。*/
     name.sin_port = htons(80);
     /* 连接到网页服务器。*/
-    if (connect(socket_fd, (struct sockaddr *)&name, sizeof(struct sockaddr_in)) == -1){
+    if (connect(socket_fd, (struct sockaddr *)&name, sizeof(struct sockaddr_in)) == -1) {
         perror("connect");
         return 1;
     }

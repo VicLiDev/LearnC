@@ -64,7 +64,7 @@ void* run_1(void *arg)
 {
     (void)arg;
     sleep(1);
-    printf(" thread 1 tid is  %lu,  pid is %u \n", pthread_self(), getpid()); 
+    printf(" thread 1 tid is  %lu,  pid is %u \n", pthread_self(), getpid());
 
     return NULL;
 }
@@ -86,7 +86,7 @@ int main()
 
     // 创建线程1
     ret = pthread_create(&tid1, NULL, run_1, NULL );
-    if(ret){
+    if(ret) {
         errno = ret;
         perror("pthread_create");
         return -1;
@@ -94,7 +94,7 @@ int main()
 
     // 创建线程2
     ret = pthread_create(&tid2, NULL, run_2, NULL );
-    if(ret){
+    if(ret) {
         errno = ret;
         perror("pthread_create");
         return -1;

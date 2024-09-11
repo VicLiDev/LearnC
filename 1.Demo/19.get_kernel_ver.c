@@ -40,8 +40,8 @@ int main(void)
     while (*p) {
         if (isdigit(*p)) { // 判断所传的字符是否是十进制数字字符
             ver[i] = strtol(p, &p, 10); // 字符串转long int
-                                        // 第二个参数设置为str数值的下一个字符
-                                        // 例如“12abc”解析完之后指向“a”返回12
+            // 第二个参数设置为str数值的下一个字符
+            // 例如“12abc”解析完之后指向“a”返回12
             i++;
         } else {
             p++;

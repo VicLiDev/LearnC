@@ -72,7 +72,7 @@ void printVal(int num)
 {
     pthread_mutex_lock(&m_mutex);
     printf("============== I am thread %d ==============\n", num);
-    for(int i = 0; i < 10; i++){
+    for(int i = 0; i < 10; i++) {
         printf("tid is: %lu \n", pthread_self());
     }
     pthread_mutex_unlock(&m_mutex);
@@ -83,7 +83,7 @@ void* run_1(void *arg)
 {
     (void) arg;
     printVal(1);
-    return (void*)1; 
+    return (void*)1;
 }
 
 void* run_2(void *arg)
@@ -97,19 +97,19 @@ void* run_2(void *arg)
 int main()
 {
     // initiate mutex
-    pthread_mutex_init( &m_mutex, NULL ) ;
+    pthread_mutex_init(&m_mutex, NULL ) ;
 
     pthread_t tid1, tid2;
     int ret;
 
     ret = pthread_create(&tid1, NULL, run_1, NULL);
-    if(ret){
+    if(ret) {
         errno = ret;
         perror("pthread_create");
         return -1;
     }
     ret = pthread_create(&tid2, NULL, run_2, NULL);
-    if(ret){
+    if(ret) {
         errno = ret;
         perror("pthread_create");
         return -1;
@@ -124,7 +124,7 @@ int main()
     printf(" thread 2 retval is  %p \n", (int*)retval_2);
 
     // destroy mutex
-    pthread_mutex_destroy( &m_mutex ) ;
+    pthread_mutex_destroy(&m_mutex ) ;
 
     return 0;
 }

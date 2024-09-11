@@ -35,8 +35,8 @@
  *  SIGEV_THREAD_ID（Linux 特定的）
  *      至于SIGEV_SIGNAL，但信号是针对sigev_notify_thread_id中给出ID的线程，该线程必须是与调用者在同一个进程中的线程。 sigev_notify_thread_id 字段指定内核线程 ID，即 clone(2) 或 gettid(2) 返回的值。此标志仅供线程库使用。
  * 将 sevp 指定为 NULL 相当于指定一个指向 sigevent 结构的指针，其中 sigev_notify 是 SIGEV_SIGNAL，sigev_signo 是 SIGALRM，而 sigev_value.sival_int 是计时器 ID。
- *  
- *  
+ *
+ *
  * 返回值： 成功时，timer_create() 返回 0，新计时器的 ID 放在 *timerid 中。 失败时，返回 -1，并设置 errno 以指示错误。
  *
  *

@@ -28,35 +28,35 @@
  */
 int spawn (char* program, char** arg_list)
 {
-	pid_t child_pid;
-	/* 复制当前进程。*/
-	child_pid = fork ();
-	if (child_pid != 0)
-		/* 这里是父进程。*/
-		return child_pid;
-	else {
-		/* 现在从执行路径中查找并执行 PROGRAM。*/
-		execvp (program, arg_list);
-		/* execvp 函数仅当出现错误的时候才返回。*/
-		fprintf (stderr, "an error occurred in execvp\n");
-		abort ();
-	}
+    pid_t child_pid;
+    /* 复制当前进程。*/
+    child_pid = fork ();
+    if (child_pid != 0)
+        /* 这里是父进程。*/
+        return child_pid;
+    else {
+        /* 现在从执行路径中查找并执行 PROGRAM。*/
+        execvp (program, arg_list);
+        /* execvp 函数仅当出现错误的时候才返回。*/
+        fprintf (stderr, "an error occurred in execvp\n");
+        abort ();
+    }
 }
 
 int main ()
 {
-	/* 准备传递给 ls 命令的参数列表 */
-	char* arg_list[] = {
-		/* argv[0], 程序的名称 */
-		"ls",
-		"-l",
-		"/",
-		NULL
-	};
-	/* 参数列表必须以 NULL 指针结束 */
-	/* 建立一个新进程运行 ls 命令。忽略返回的进程 ID */
-	spawn ("ls", arg_list);
-	printf ("done with main program\n");
+    /* 准备传递给 ls 命令的参数列表 */
+    char* arg_list[] = {
+        /* argv[0], 程序的名称 */
+        "ls",
+        "-l",
+        "/",
+        NULL
+    };
+    /* 参数列表必须以 NULL 指针结束 */
+    /* 建立一个新进程运行 ls 命令。忽略返回的进程 ID */
+    spawn ("ls", arg_list);
+    printf ("done with main program\n");
 
-	return 0;
+    return 0;
 }

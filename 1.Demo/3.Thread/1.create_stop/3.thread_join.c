@@ -42,7 +42,7 @@ void* run_1(void *arg)
         printf("I am thread 1 loop:%d\n", loop);
         sleep(1);
     }
-    return (void*)1; 
+    return (void*)1;
 }
 
 void* run_2(void *arg)

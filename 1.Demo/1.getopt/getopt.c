@@ -1,4 +1,4 @@
-/* 
+/*
  * 参考博客:http://www.cnblogs.com/chenliyang/p/6633739.html
  * int getopt(int argc, char * const argv[], const char *optstring);
  * argc：main()函数传递过来的参数的个数
@@ -21,7 +21,7 @@
  * optind —— 再次调用 getopt() 时的下一个 argv指针的索引。
  * optopt —— 最后一个未知选项。
  * opterr ­—— 如果不希望getopt()打印出错信息，则只要将全域变量opterr设为0即可。
- * 
+ *
  * 注意: getopt是用来解析命令行选项参数的，但是只能解析短选项: -d 100,不能解析长选项：--prefix
  */
 
@@ -36,12 +36,12 @@ int main(int argc, char **argv)
     int opt;
     char *string = "a::b:c:d";
     while ((opt = getopt(argc, argv, string))!= -1)
-    { 
+    {
         printf("opt = %c\t\t", opt);
         printf("optarg = %s\t\t",optarg);
         printf("optind = %d\t\t",optind);
         printf("argv[optind] = %s\n",argv[optind]);
-        switch(opt){
+        switch(opt) {
         case 'a':
             printf("----------- a\n");
             break;
@@ -51,5 +51,5 @@ int main(int argc, char **argv)
         default:
             break;
         }
-    }  
+    }
 }

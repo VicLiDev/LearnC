@@ -2,6 +2,6 @@
 
 int main()
 {
-	hello("everyone");
-	return 0;
+    hello("everyone");
+    return 0;
 }
