@@ -19,7 +19,7 @@ void lib_do_work()
 {
     printf("lib C doing work...\n");
     // 模拟工作
-    sleep(1);
+    /* sleep(1); */
 }
 
 void lib_cleanup()
