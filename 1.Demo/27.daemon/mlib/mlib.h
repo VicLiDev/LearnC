@@ -16,7 +16,7 @@ extern "C" {
 int lib_init();
 
 // 执行工作
-void lib_do_work();
+void lib_do_work(const char *prefix);
 
 // 清理资源
 void lib_cleanup();

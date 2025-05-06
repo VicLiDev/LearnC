@@ -13,7 +13,7 @@
 #include "mlib.h"
 #include "mlibcpp.h"
 
-#define WORKER_TAG "work"
+#define WORKER_TAG "work2"
 
 volatile sig_atomic_t keep_running = 1;
 
@@ -24,7 +24,7 @@ void handle_signal(int sig)
 
 typedef void (*m_lib_func_t)(const char *prefix);
 
-/* #define USE_DL_OPT */
+#define USE_DL_OPT
 
 int main(int argc, char *argv[])
 {

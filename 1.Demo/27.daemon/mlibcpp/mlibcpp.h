@@ -31,7 +31,7 @@ public:
         printf("lib C++ cleanup\n");
     }
 
-    void work();
+    void work(const char *prefix);
 };
 
 #endif /* MLIBCPP_H__ */

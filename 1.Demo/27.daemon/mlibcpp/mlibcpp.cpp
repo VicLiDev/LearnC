@@ -7,9 +7,9 @@
 
 #include "mlibcpp.h"
 
-void TestLib::work()
+void TestLib::work(const char *prefix)
 {
-    printf("lib C++ doing work...\n");
+    printf("==> prefix:%s lib C++ doing work...\n", prefix);
 
     return;
 }

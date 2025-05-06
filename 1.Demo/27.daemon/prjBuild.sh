@@ -14,7 +14,15 @@ mkdir ${build_dir} && cd ${build_dir} && cmake .. && make
 
 # run
 
-${root_dir}/${build_dir}/bin/daemon ${root_dir}/${build_dir}/bin/worker
+${root_dir}/${build_dir}/bin/daemon_guard \
+    --cmd "${root_dir}/${build_dir}/bin/test_worker" \
+    --name "work1" \
+    --max-restarts 5 \
+    --restart-delay 3 \
+    -- \
+    --cmd "${root_dir}/${build_dir}/bin/test_worker2" \
+    --name "work2" \
+    --max-restarts 3
 
 # killall /home/lhj/Projects/LearnC/1.Demo/27.daemon/build/bin/daemon
 # killall /home/lhj/Projects/LearnC/1.Demo/27.daemon/build/bin/worker

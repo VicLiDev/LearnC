@@ -15,9 +15,9 @@ int lib_init()
     return 0;
 }
 
-void lib_do_work()
+void lib_do_work(const char *prefix)
 {
-    printf("lib C doing work...\n");
+    printf("==> prefix:%s lib C doing work...\n", prefix);
     // 模拟工作
     /* sleep(1); */
 }
