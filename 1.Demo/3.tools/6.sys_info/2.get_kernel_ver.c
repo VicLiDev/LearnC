@@ -1,5 +1,5 @@
 /*************************************************************************
-    > File Name: 19.get_kernel_ver.c
+    > File Name: 2.get_kernel_ver.c
     > Author: LiHongjin
     > Mail: 872648180@qq.com
     > Created Time: Fri 19 Jul 2024 12:30:42 PM CST

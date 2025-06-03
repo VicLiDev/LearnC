@@ -1,5 +1,5 @@
 /*************************************************************************
-    > File Name: 24.variable_parameters.c
+    > File Name: 8.variable_parameters.c
     > Author: LiHongjin
     > Mail: 872648180@qq.com
     > Created Time: Sat  7 Dec 16:19:02 2024
