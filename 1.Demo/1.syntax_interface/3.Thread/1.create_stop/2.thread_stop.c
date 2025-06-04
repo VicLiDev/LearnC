@@ -1,5 +1,4 @@
 /*
- *
  * 如果需要只终止某个线程而不是整个进程都终止，有三种方法。
  *  1).从线程函数return，对主线程不使用，在main函数中return 相当于exit。
  *  2).线程可以调用 pthread_exit() 终止自己。这里也可以说是线程自杀。该函数不会出错。
@@ -56,6 +55,6 @@ int main()
 
     /* 确保主线程最后退出 */
     sleep(2);
-    printf("The thread quit, I should quit.\n");
+    printf("The threads quit, I should quit.\n");
     return 0;
 }

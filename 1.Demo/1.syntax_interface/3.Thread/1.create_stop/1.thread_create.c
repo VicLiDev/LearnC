@@ -12,19 +12,18 @@
  *
  *
  * int pthread_create(pthread_t *thread,
- *                      const pthread_attr_t *attr,
- *                      void *(*start_routine)(void *),
- *                      void *arg);
- * 函数 pthread_create 负责创建新线程。你需要给它提供如下信息:
- *  1.*thread: 新线程的线程 ID 在这里返回。
+ *                    const pthread_attr_t *attr,
+ *                    void *(*start_routine)(void *),
+ *                    void *arg);
+ * 函数 pthread_create 负责创建新线程，参数如下:
+ *  1.*thread: 返回新线程的线程 ID。
  *  2.*attr: 指向线程属性，指定新线程与程序其它部分交互的细节。如果传递 NULL，
- *    新线程将被赋予一组默认线程属性。线程属性支持改变线程的各个方面，比如栈大小，
- *    调度参数及初始分离（detach）状态。
- *  3.指向线程函数的指针。这是一个普通的函数指针,接收void指针作为参数，返回值也是
- *    void指针，类型如下(可以参考下边的示例):
+ *    则使用默认线程属性。
+ *    线程属性支持改变线程的各个方面，比如栈大小，调度参数及初始分离（detach）状态。
+ *  3.指向线程函数的指针。定义类型如下:
  *    void * (*) (void*);
- *  4.一个线程参数,类型 void*。不论传递什么值作为这个参数,当线程开始执行的时候，
- *    它都会被直接传递给新的线程。出错时返回错误码（不使用errno）
+ *  4.一个线程参数,类型 void*。线程开始执行时，它会被传递给指定的线程函数。
+ *    出错时返回错误码（不使用errno）
  *
  *
  * main函数所在的线程称为默认线程或主线程与fork()函数类似，新的线程会继承绝大多数
@@ -34,7 +33,7 @@
  *
  * 线程ID（TID）类似于进程ID（PID），但PID由linux内核分配，而TID由Pthread库分配。
  * TID是由模糊类型pthread_t表示的，POSIX不要求他是个算术类型。因此比较的时候不能
- * 确保等好可以正常工作，因此Pthread库提供了接口用于比较TID：
+ * 确保等号可以正常工作，因此Pthread库提供了接口用于比较TID：
  *  #includde <pthread.h>
  *  int pthread_equal(pthread_t t1, pthread_t t2);
  * 相同返回非零值，不同返回0。
