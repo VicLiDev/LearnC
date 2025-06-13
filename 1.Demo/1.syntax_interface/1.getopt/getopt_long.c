@@ -10,24 +10,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <string.h>
 
 
 typedef struct cmd_paras_t {
+    int en_init;
+    int en_clean;
     char *output;
     int  verbose; /* 是否显示冗余信息?*/
-} cmdParas;
+} cmd_paras;
 
 void print_usage(FILE* stream, int exit_code, const char *program_name)
 {
     fprintf (stream, "Usage: %s options [ -o|--output output_file ... ]\n", program_name);
     fprintf (stream,
-             " -h --help Display this usage information.\n"
-             " -o --output filename Write output to file.\n"
-             " -v --verbose Print verbose messages.\n");
+             " -h|--help    Display this usage information.\n"
+             " --init       Init.\n"
+             " --clean      Clean.\n"
+             " -o|--output  Write output to file.\n"
+             " -v|--verbose Print verbose messages.\n");
     exit (exit_code);
 }
 
-int proc_paras(int argc, char* argv[], cmdParas *parse_paras)
+int proc_paras(int argc, char* argv[], cmd_paras *paras)
 {
     const char* program_name = argv[0];
     int opt;
@@ -37,7 +42,7 @@ int proc_paras(int argc, char* argv[], cmdParas *parse_paras)
      * 单字符加冒号b:   表示选项b有且必须加参数   格式：-b 100或-b100,但-b=100错
      * 单字符加2冒号c:: 表示选项c可以有，也可以无 格式：-c200，其它格式错误
      */
-    const char* const short_options = "ho:v";
+    const char* const short_opts = "ho:v";
     /* 描述了长选项的 struct option 数组。*/
     /* *name;      长选项的名字（例如 "help"） */
     /* has_arg;    是否有附加参数： */
@@ -46,12 +51,15 @@ int proc_paras(int argc, char* argv[], cmdParas *parse_paras)
     /*               - optional_argument (2): 可选参数 */
     /* *flag;      如果不为 NULL，则设置该指针的值 */
     /* val;        如果 flag 为 NULL，则返回该值，便于后续case处理 */
-    const struct option long_options[] = {
+    const struct option long_opts[] = {
         { "help",    no_argument,       NULL, 'h' },
+        { "init",    no_argument,       NULL, 0   },  // --init（无短参数）
+        { "clean",   no_argument,       NULL, 0   },  // --clean（无短参数）
         { "output",  required_argument, NULL, 'o' },
         { "verbose", required_argument, NULL, 'v' },
         { NULL, 0, NULL, 0 } /* 结束标志 */
     };
+    int long_idx = 0;
 
     /*
      * getopt_long:
@@ -63,41 +71,62 @@ int proc_paras(int argc, char* argv[], cmdParas *parse_paras)
      * 用来保存当前选项的参数值。如果选项需要一个参数，那么该参数的值会被存储在
      * optarg 中。
      */
-    while ((opt = getopt_long(argc, argv, short_options, long_options, NULL)) != -1) {
+    while ((opt = getopt_long(argc, argv, short_opts, long_opts, &long_idx)) != -1) {
         switch (opt) {
-            case 'h': /* -h 或 --help */
+            case 'h': { /* -h 或 --help */
                 print_usage (stdout, 0, program_name);
-                break;
-            case 'o': /* -o 或 --output */
-                parse_paras->output = optarg;
-                break;
-            case 'v': /* -v 或 --verbose */
-                parse_paras->verbose = 1;
-                break;
-            case '?':
+            } break;
+            case 0: {
+                // 处理无短参数的长选项
+                const char* cur_opt_name = long_opts[long_idx].name;
+                if (strcmp(cur_opt_name, "init") == 0)
+                    paras->en_init = 1;
+                else if (strcmp(cur_opt_name, "clean") == 0)
+                    paras->en_clean = 1;
+            } break;
+            case 'o': { /* -o 或 --output */
+                paras->output = optarg;
+            }break;
+            case 'v': { /* -v 或 --verbose */
+                paras->verbose = 1;
+            }break;
+            case '?': {
                 print_usage (stderr, 1, program_name);
-                break;
-            default: /* 别的什么:非预料中的 */
+            }break;
+            default: { /* 别的什么:非预料中的 */
                 abort ();
+            }break;
         }
     }
+
+    /* check paras */
+    if (!paras->output) print_usage (stderr, 1, program_name);
+
+    printf("======> cmd paras <======\n");
+    printf("en_init:   %d\n", paras->en_init);
+    printf("en_clean:  %d\n", paras->en_clean);
+    printf("en_output: %s\n", paras->output);
+    /* 选项处理完毕。OPTIND 指向第一个非选项参数。
+     * 出于演示目的,如果指定了冗余输出选项,则输出这些参数。*/
+    if (paras->verbose) {
+        printf("verbose:   ");
+        int i;
+        for (i = optind; i < argc; ++i)
+            printf ("%s ", argv[i]);
+        printf("\n");
+    } else {
+        printf("verbose:   \n");
+    }
+
+
 
     return 0;
 }
 
 int main(int argc, char *argv[])
 {
-    cmdParas mcmd_paras = {NULL, 0};
-    proc_paras(argc, argv, &mcmd_paras);
-
-    /* 选项处理完毕。OPTIND 指向第一个非选项参数。
-     * 出于演示目的,如果指定了冗余输出选项,则输出这些参数。*/
-    printf("output: %s\n", mcmd_paras.output);
-    if (mcmd_paras.verbose) {
-        int i;
-        for (i = optind; i < argc; ++i)
-            printf ("Argument: %s\n", argv[i]);
-    }
+    cmd_paras m_cmd_paras = {0};
+    proc_paras(argc, argv, &m_cmd_paras);
 
     return 0;
 }
