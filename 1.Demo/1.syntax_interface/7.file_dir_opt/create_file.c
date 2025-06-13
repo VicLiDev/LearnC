@@ -18,6 +18,9 @@
 #include <stdio.h>
 #include <unistd.h>   // access
 #include <sys/stat.h> // stat
+#include <libgen.h> // basename dirname
+#include <string.h>
+#include <stdlib.h>
 
 int create_txt(char *file_name)
 {
@@ -146,6 +149,55 @@ int check_file_exist(char* f_name)
     return 0;
 }
 
+int basename_dir()
+{
+    char path[] = "/home/user/file.txt";
+    char *base = basename(path);  // 获取文件名部分
+    char *dir = dirname(path);    // 获取目录部分
+
+    printf("Original path: %s\n", path);
+    printf("Directory: %s\n", dir);
+    printf("Basename: %s\n", base);
+
+    return 0;
+}
+
+void split_path(const char *path, char *dir, char *base, char *smp_base)
+{
+    char *last_slash = strrchr(path, '/');
+
+    if (last_slash == NULL) {
+        dir[0] = '.';
+        dir[1] = '\0';
+        strncpy(base , path, strlen(path) + 1);
+    } else {
+        size_t dir_len = last_slash - path;
+        if (dir_len == 0) {
+            dir[0] = '/';
+            dir[1] = '\0';
+        } else {
+            char *dir_part = malloc(dir_len + 1);
+            strncpy(dir, path, dir_len);
+            dir[dir_len] = '\0';
+        }
+        strncpy(base , last_slash + 1, strlen(last_slash + 1) + 1);
+    }
+
+    /* 去掉后缀名的文件名 */
+    {
+        char *result = strdup(base);  // 创建副本
+        if (result != NULL) {
+            char *dot = strrchr(result, '.');
+            if (dot != NULL) {
+                *dot = '\0';
+            }
+
+            strncpy(smp_base, result, strlen(result) + 1);
+        }
+        free(result);
+    }
+}
+
 int main(int argc, char* argv[])
 {
     (void) argc;
@@ -164,6 +216,20 @@ int main(int argc, char* argv[])
     check_file_exist(f_ascii);
     check_file_exist(f_bin);
     check_file_exist(f_csv);
+
+    basename_dir();
+    /* 手动实现 */
+    {
+        const char *path = "/home/user/file.txt";
+        char dir[256], base[256], smp_base[256];
+
+        split_path(path, dir, base, smp_base);
+
+        printf("manual Path: %s\n", path);
+        printf("manual Directory: %s\n", dir);
+        printf("manual Basename: %s\n", base);
+        printf("manual Simple basename: %s\n", smp_base);
+    }
 
     return 0;
 }
