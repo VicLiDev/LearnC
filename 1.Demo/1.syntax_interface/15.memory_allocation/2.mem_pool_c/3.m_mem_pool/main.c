@@ -16,37 +16,33 @@
 
 void* thread_func(void *arg)
 {
-    mem_pool_ctx *mp_ctx = (mem_pool_ctx *)arg;
+    (void)arg;
 
     for (int i = 0; i < ALLOCS; ++i) {
         size_t sz = rand() % 1024 + 1;
-        void* p = mem_pool_alloc_label(mp_ctx, sz, "worker");
+        void* p = mem_pool_alloc_label(sz, "worker");
         usleep(1000);
-        mem_pool_free(mp_ctx, p);
+        mem_pool_free(p);
     }
     return NULL;
 }
 
 int main()
 {
-    mem_pool_ctx *mp_ctx;
-
-    mem_pool_init(&mp_ctx);
-    mem_pool_set_debug(mp_ctx, 1);
-    mem_pool_set_protection(mp_ctx, 1);
+    mem_pool_set_debug(1);
+    mem_pool_set_protection(1);
 
     pthread_t th[THREADS];
     for (int i = 0; i < THREADS; ++i)
-        pthread_create(&th[i], NULL, thread_func, mp_ctx);
+        pthread_create(&th[i], NULL, thread_func, NULL);
 
     for (int i = 0; i < THREADS; ++i)
         pthread_join(th[i], NULL);
 
 
-    /* void *leak = mem_pool_alloc_label(mp_ctx, 1024, "leak test"); */
+    /* void *leak = mem_pool_alloc_label(1024, "leak test"); */
 
-    mem_pool_dump_stats(mp_ctx);
-    mem_pool_dump_leaks(mp_ctx);
-    mem_pool_destroy(mp_ctx);
+    mem_pool_dump_stats();
+
     return 0;
 }

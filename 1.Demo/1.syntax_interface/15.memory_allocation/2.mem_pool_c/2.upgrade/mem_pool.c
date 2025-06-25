@@ -83,8 +83,20 @@ void mem_pool_init(void)
 
 void mem_pool_destroy(void)
 {
+    int i;
+    MemBlock *cur, *next;
+
     pthread_mutex_lock(&global_lock);
-    MemBlock* cur = active_list;
+    for (i = 0; i < slab_class_count; i++) {
+        cur = slab_classes[i].free_list;
+        while (cur) {
+            next = cur->next;
+            free(cur->real_ptr);
+            cur = next;
+        }
+    }
+
+    cur = active_list;
     while (cur) {
         MemBlock* next = cur->next;
         free(cur->real_ptr);
@@ -130,7 +142,7 @@ void* mem_pool_alloc_label(size_t size, const char* label)
         return NULL;
 
     MemBlock* blk = (MemBlock*)raw;
-    blk->size = size;
+    blk->size = actual_size;
     blk->real_ptr = raw;
     atomic_init(&blk->freed, false);
     blk->alloc_time = time(NULL);
@@ -144,7 +156,7 @@ void* mem_pool_alloc_label(size_t size, const char* label)
         blk->frames = backtrace(blk->callstack, MAX_CALLSTACK);
     }
     if (protect_mode) {
-        uint64_t* tail = (uint64_t*)((char*)raw + sizeof(MemBlock) + size);
+        uint64_t* tail = (uint64_t*)((char*)raw + sizeof(MemBlock) + actual_size - sizeof(uint64_t));
         *tail = TAIL_MAGIC;
     }
 
@@ -181,7 +193,7 @@ void mem_pool_free(void* ptr)
     }
 
     if (protect_mode) {
-        uint64_t* tail = (uint64_t*)((char*)blk + sizeof(MemBlock) + blk->size);
+        uint64_t* tail = (uint64_t*)((char*)blk + sizeof(MemBlock) + blk->size - sizeof(uint64_t));
         if (*tail != TAIL_MAGIC) {
             fprintf(stderr, "[mem_pool] Buffer overflow: %p label=%s\n", ptr, blk->label);
             pthread_mutex_unlock(&global_lock);

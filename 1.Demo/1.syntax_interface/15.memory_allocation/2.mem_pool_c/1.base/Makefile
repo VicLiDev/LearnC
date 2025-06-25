@@ -5,7 +5,7 @@ $(TARGET): $(SRCs)
 	gcc $(SRCs) -lpthread -o $(TARGET)
 
 test:
-	./$(TARGET)
+	valgrind --leak-check=full ./$(TARGET)
 
 clean:
 	rm $(TARGET)
